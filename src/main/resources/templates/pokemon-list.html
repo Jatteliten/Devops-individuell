@@ -9,15 +9,17 @@
 </head>
 <body>
 <div class="container mt-4">
-    <h1>Pokémon List</h1>
-    <a href="/pokemon/list"><button type="button" class="btn btn-danger">Clear filters</button></a>
+    <h1>
+        <span class="outlined-text" style="color: red;">Pok</span><span style="color: #000000;">é</span><span class="outlined-text" style="color: white;">list</span>
+    </h1>
+    <a href="/pokemon/list"><button type="button" class="btn btn-outline-danger">Clear filters</button></a>
 
     <form class="form-inline my-2 my-lg-0" style="padding-top: 5px;" method="get" action="/pokemon/list-by-search">
         <input class="form-control mr-sm-2" type="search"   name="searchWord" placeholder="Search" aria-label="Search">
     </form>
 
     <div class="dropdown show" style="padding-top:5px;">
-        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Type
         </a>
 
@@ -34,7 +36,7 @@
     <table class="table mt-3">
         <thead>
         <tr>
-            <th>Pokedex ID</th>
+            <th>Pokédex ID</th>
             <th>Sprite</th>
             <th>Name</th>
             <th>Type</th>

@@ -36,3 +36,13 @@
     display: none;
     z-index: 1000;
 }
+
+.outlined-text {
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.h1 span {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
