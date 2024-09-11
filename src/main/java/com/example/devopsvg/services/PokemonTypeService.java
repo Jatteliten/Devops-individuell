@@ -41,4 +41,8 @@ public class PokemonTypeService {
 
         return types;
     }
+
+    public List<String> getAllTypeNamesList(){
+        return pokemonTypeRepo.findAll().stream().map(PokemonType::getName).toList();
+    }
 }
