@@ -14,8 +14,8 @@ import java.net.http.HttpResponse;
 
 @ComponentScan
 public class FetchTypesAndPokemonFromDatabase implements CommandLineRunner {
-    PokemonTypeService pokemonTypeService;
-    PokemonService pokemonService;
+    private final PokemonTypeService pokemonTypeService;
+    private final PokemonService pokemonService;
     private final ObjectMapper objectMapper;
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final String POKEMON_TYPES_LIST_API_URL = "https://pokeapi.co/api/v2/type";

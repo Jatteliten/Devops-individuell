@@ -2,13 +2,16 @@ package com.example.devopsvg.services;
 
 import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonTypeRepo;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class PokemonTypeService {
-    PokemonTypeRepo pokemonTypeRepo;
+    private final PokemonTypeRepo pokemonTypeRepo;
 
     public PokemonTypeService(PokemonTypeRepo pokemonTypeRepo){
         this.pokemonTypeRepo = pokemonTypeRepo;
@@ -27,5 +30,15 @@ public class PokemonTypeService {
                     .name(name)
                     .build());
         }
+    }
+
+    public List<PokemonType> getTypesListFromApi(JsonNode pokemonData){
+        List<PokemonType> types = new ArrayList<>();
+        for (JsonNode typeNode : pokemonData.path("types")) {
+            types.add(findPokemonTypeByName(
+                    typeNode.path("type").path("name").asText()));
+        }
+
+        return types;
     }
 }
