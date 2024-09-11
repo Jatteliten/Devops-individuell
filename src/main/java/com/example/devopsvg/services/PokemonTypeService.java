@@ -18,7 +18,7 @@ public class PokemonTypeService {
         return pokemonTypeRepo.findByName(name);
     }
 
-    public PokemonType saveTypeToDatabaseIfItDoesNotAlreadyExist(String name){
+    public void saveTypeToDatabaseIfItDoesNotAlreadyExist(String name){
         Optional<PokemonType> tempPokemonType = Optional.ofNullable(
                 pokemonTypeRepo.findByName(name));
 
@@ -27,7 +27,5 @@ public class PokemonTypeService {
                     .name(name)
                     .build());
         }
-
-        return pokemonTypeRepo.findByName(name);
     }
 }
