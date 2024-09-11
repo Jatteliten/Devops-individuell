@@ -35,4 +35,11 @@ public class PokemonController {
         return "pokemon-list.html";
     }
 
+    @GetMapping("/list-by-search")
+    public String pokemonListBySearch(@RequestParam("searchWord") String input, Model model){
+        model.addAttribute("pokemonlist", pokemonRepo.findAllByNameIsContainingIgnoreCase(input));
+        model.addAttribute("types", pokemonTypeService.getAllTypeNamesList());
+        return "pokemon-list.html";
+    }
+
 }
