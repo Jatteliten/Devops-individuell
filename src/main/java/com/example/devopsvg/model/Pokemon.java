@@ -3,7 +3,7 @@ package com.example.devopsvg.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +25,7 @@ public class Pokemon {
     private String name;
     private String spriteLink;
     private String artworkLink;
-    @OneToMany(mappedBy = "pokemon")
+    @ManyToMany
     private List<PokemonType> types;
 
 }
