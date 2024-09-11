@@ -30,7 +30,7 @@ public class PokemonService {
         JsonNode pokemonData = getPokemonDataFromApi(pokemonId);
         Optional<Pokemon> tempPokemon = Optional.ofNullable(
                 pokemonRepo.findByName(pokemonData.path("name").asText()));
-        if(tempPokemon.isEmpty()){
+        if(tempPokemon.isEmpty() && pokemonData.path("id").asInt() < 5000){
             savePokemonToDatabase(pokemonData);
         }
     }
@@ -38,7 +38,7 @@ public class PokemonService {
     private void savePokemonToDatabase(JsonNode pokemonData){
         Pokemon newPokemon = Pokemon.builder()
                 .pokedexId(pokemonData.path("id").asInt())
-                .name(pokemonData.path("name").asText())
+                .name(capitalizeFirstLetter(pokemonData.path("name").asText()))
                 .spriteLink(pokemonData.path("sprites")
                         .path("front_default")
                         .asText())
@@ -51,9 +51,8 @@ public class PokemonService {
                 .build();
 
         pokemonRepo.save(newPokemon);
-        System.out.println(pokemonData.path("name").asText() + " saved.");
+        System.out.println(capitalizeFirstLetter(pokemonData.path("name").asText()) + " saved.");
     }
-
 
     public JsonNode getPokemonDataFromApi(int pokemonId) {
         String url = POKE_API_URL + pokemonId;
@@ -65,6 +64,13 @@ public class PokemonService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private String capitalizeFirstLetter(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+        return Character.toUpperCase(input.charAt(0)) + input.substring(1);
     }
 }
 
