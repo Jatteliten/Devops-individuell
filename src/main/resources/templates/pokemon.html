@@ -28,9 +28,10 @@
             <td th:text="${pokemon.name}">Name</td>
             <td>
                 <div th:each="type : ${pokemon.types}">
-                    <button th:text="${type.name}"
-                            th:class="'type-button type-' + ${type.name.toLowerCase()}"
-                            class="btn" disabled>Type</button>
+                    <a th:href="'/pokemon/list-by-type?type=' + ${type.name.toLowerCase()}"
+                       th:text="${type.name}"
+                       th:class="'btn type-button type-' + ${type.name.toLowerCase()}">
+                    </a>
                 </div>
             </td>
         </tr>
