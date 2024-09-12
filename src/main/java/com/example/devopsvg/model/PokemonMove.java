@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,18 +17,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Pokemon {
+public class PokemonMove {
     @Id
     @GeneratedValue
     private Long id;
 
-    private int pokedexId;
     private String name;
-    private String spriteLink;
-    private String artworkLink;
-    @ManyToMany
-    private List<PokemonType> types;
-    @ManyToMany
-    private List<PokemonMove> moves;
 
+    private String damageClass;
+
+    @ManyToMany
+    private List<Pokemon> pokemon;
+
+    @ManyToOne
+    private PokemonType type;
 }

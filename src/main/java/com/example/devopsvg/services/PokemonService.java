@@ -18,13 +18,15 @@ public class PokemonService {
     private final ObjectMapper objectMapper;
     private final PokemonRepo pokemonRepo;
     private final PokemonTypeService pokemonTypeService;
+    private final PokemonMoveService pokemonMoveService;
 
     public PokemonService(RestTemplate restTemplate, ObjectMapper objectMapper,
-                          PokemonRepo pokemonRepo, PokemonTypeService pokemonTypeService) {
+                          PokemonRepo pokemonRepo, PokemonTypeService pokemonTypeService, PokemonMoveService pokemonMoveService) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.pokemonRepo = pokemonRepo;
         this.pokemonTypeService = pokemonTypeService;
+        this.pokemonMoveService = pokemonMoveService;
     }
 
     public void savePokemonToDatabaseIfItDoesNotAlreadyExist(int pokemonId){
@@ -56,6 +58,7 @@ public class PokemonService {
                         .path("front_default")
                         .asText())
                 .types(pokemonTypeService.getTypesListFromApi(pokemonData))
+                .moves(pokemonMoveService.getMoveListFromApi(pokemonData))
                 .build();
     }
 

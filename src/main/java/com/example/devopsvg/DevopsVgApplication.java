@@ -14,7 +14,7 @@ public class DevopsVgApplication {
         if(args.length == 0) {
             SpringApplication.run(DevopsVgApplication.class, args);
         }else if(Objects.equals(args[0], "fetch-types-and-pokemon")){
-            SpringApplication application = new SpringApplication(FetchTypesAndPokemonFromDatabase.class);
+            SpringApplication application = new SpringApplication(FetchTypesAndMoveAndPokemonToDatabase.class);
             application.setWebApplicationType(WebApplicationType.NONE);
             application.run(args);
         }
