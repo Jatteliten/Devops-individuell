@@ -37,7 +37,14 @@ public class PokemonService {
     }
 
     private void savePokemonToDatabase(JsonNode pokemonData){
-        Pokemon newPokemon = Pokemon.builder()
+        Pokemon newPokemon = createPokemonFromJson(pokemonData);
+
+        pokemonRepo.save(newPokemon);
+        System.out.println(capitalizeFirstLetter(pokemonData.path("name").asText()) + " saved.");
+    }
+
+    public Pokemon createPokemonFromJson(JsonNode pokemonData) {
+        return Pokemon.builder()
                 .pokedexId(pokemonData.path("id").asInt())
                 .name(capitalizeFirstLetter(pokemonData.path("name").asText()))
                 .spriteLink(pokemonData.path("sprites")
@@ -50,9 +57,6 @@ public class PokemonService {
                         .asText())
                 .types(pokemonTypeService.getTypesListFromApi(pokemonData))
                 .build();
-
-        pokemonRepo.save(newPokemon);
-        System.out.println(capitalizeFirstLetter(pokemonData.path("name").asText()) + " saved.");
     }
 
     public JsonNode getPokemonDataFromApi(int pokemonId) {
@@ -67,7 +71,7 @@ public class PokemonService {
         return null;
     }
 
-    private String capitalizeFirstLetter(String input) {
+    public String capitalizeFirstLetter(String input) {
         if (input == null || input.isEmpty()) {
             return input;
         }

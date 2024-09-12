@@ -1,8 +1,6 @@
 package com.example.devopsvg.controller;
 
 import com.example.devopsvg.repos.PokemonRepo;
-import com.example.devopsvg.repos.PokemonTypeRepo;
-import com.example.devopsvg.services.PokemonService;
 import com.example.devopsvg.services.PokemonTypeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +14,7 @@ public class PokemonController {
     private final PokemonRepo pokemonRepo;
     private final PokemonTypeService pokemonTypeService;
 
-    public PokemonController(PokemonService pokemonService, PokemonRepo pokemonRepo, PokemonTypeRepo pokemonTypeRepo, PokemonTypeService pokemonTypeService) {
+    public PokemonController(PokemonRepo pokemonRepo, PokemonTypeService pokemonTypeService) {
         this.pokemonRepo = pokemonRepo;
         this.pokemonTypeService = pokemonTypeService;
     }
