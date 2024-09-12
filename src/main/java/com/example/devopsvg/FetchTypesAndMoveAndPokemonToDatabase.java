@@ -3,6 +3,7 @@ package com.example.devopsvg;
 import com.example.devopsvg.services.PokemonMoveService;
 import com.example.devopsvg.services.PokemonService;
 import com.example.devopsvg.services.PokemonTypeService;
+import com.example.devopsvg.util.JsonExtractor;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.CommandLineRunner;
@@ -16,27 +17,25 @@ import java.net.http.HttpResponse;
 
 @ComponentScan
 public class FetchTypesAndMoveAndPokemonToDatabase implements CommandLineRunner {
+    JsonExtractor jsonExtractor = new JsonExtractor();
     private final PokemonTypeService pokemonTypeService;
     private final PokemonService pokemonService;
     private final PokemonMoveService pokemonMoveService;
-    private final ObjectMapper objectMapper;
-    private static final HttpClient client = HttpClient.newHttpClient();
     private static final String POKEMON_TYPES_LIST_API_URL = "https://pokeapi.co/api/v2/type";
     private static final String POKEMON_MOVES_LIST_API_URL = "https://pokeapi.co/api/v2/move?limit=10000&offset=0";
     private static final String POKEMON_LIST_API_URL = "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0";
 
     public FetchTypesAndMoveAndPokemonToDatabase(PokemonTypeService pokemonTypeService, PokemonService pokemonService,
-                                                 PokemonMoveService pokemonMoveService, ObjectMapper objectMapper){
+                                                 PokemonMoveService pokemonMoveService){
         this.pokemonTypeService = pokemonTypeService;
         this.pokemonService = pokemonService;
         this.pokemonMoveService = pokemonMoveService;
-        this.objectMapper = objectMapper;
     }
     @Override
     public void run(String... args) throws Exception {
-        fetchTypesToDatabase(createJsonNodeFromUrl(POKEMON_TYPES_LIST_API_URL));
-        fetchMovesToDatabase(createJsonNodeFromUrl(POKEMON_MOVES_LIST_API_URL));
-        fetchPokemonToDatabase(createJsonNodeFromUrl(POKEMON_LIST_API_URL));
+        fetchTypesToDatabase(jsonExtractor.createJsonNodeFromUrl(POKEMON_TYPES_LIST_API_URL));
+        fetchMovesToDatabase(jsonExtractor.createJsonNodeFromUrl(POKEMON_MOVES_LIST_API_URL));
+        fetchPokemonToDatabase(jsonExtractor.createJsonNodeFromUrl(POKEMON_LIST_API_URL));
         System.out.println("*** Fetch complete ***");
     }
 
@@ -62,16 +61,6 @@ public class FetchTypesAndMoveAndPokemonToDatabase implements CommandLineRunner 
                     extractIdFromUrl(pokemonNode.path("url").asText()));
         }
         System.out.println("*** All moves added ***");
-    }
-
-    private JsonNode createJsonNodeFromUrl(String url) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        JsonNode rootNode = objectMapper.readTree(response.body());
-        return rootNode.path("results");
     }
 
     private int extractIdFromUrl(String url) {

@@ -23,6 +23,7 @@ public class Pokemon {
 
     private int pokedexId;
     private String name;
+    private String flavorText;
     private String spriteLink;
     private String artworkLink;
     @ManyToMany

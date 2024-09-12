@@ -43,7 +43,7 @@ class PokemonServiceTest {
     }
 
     @Test
-    void createPokemonFromJsonShouldCreateCorrectPokemon(){
+    void createPokemonFromJsonShouldCreateCorrectPokemon() {
         Pokemon pokemon;
 
         try {
