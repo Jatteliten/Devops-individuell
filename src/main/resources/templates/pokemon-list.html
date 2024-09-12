@@ -33,7 +33,7 @@
     </div>
 
 
-    <table class="table mt-3" style="text-align: center;">
+    <table class="table mt-3" style="text-align: center; vertical-align: middle;">
         <thead>
         <tr>
             <th>Pokédex ID</th>
@@ -46,9 +46,14 @@
         <tr th:each="pokemon : ${pokemonlist}">
             <td th:text="${pokemon.pokedexId}">Pokedex ID</td>
             <td>
-                <img th:src="${pokemon.spriteLink}" alt="Sprite" style="max-width: 100px; max-height: 100px;">
+                <a th:href="'/pokemon/pokemon-info?pokemonName=' + ${pokemon.name}">
+                    <img th:src="${pokemon.spriteLink}" alt="Sprite" style="max-width: 100px; max-height: 100px;">
+                </a>
             </td>
-            <td th:text="${pokemon.name}">Name</td>
+            <td>
+                <a th:href="'/pokemon/pokemon-info?pokemonName=' + ${pokemon.name}" th:text="${pokemon.name}"
+                   style="color: black; text-decoration: none;"></a>
+            </td>
             <td>
                 <div th:each="type : ${pokemon.types}">
                     <a th:href="'/pokemon/list-by-type?type=' + ${type.name.toLowerCase()}"
@@ -60,6 +65,7 @@
         </tr>
         </tbody>
     </table>
+
 </div>
 
 <a id="back-to-top" href="#"><button type="button" class="btn btn-outline-success">to Top</button></a>

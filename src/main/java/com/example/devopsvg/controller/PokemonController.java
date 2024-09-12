@@ -40,4 +40,10 @@ public class PokemonController {
         return "pokemon-list.html";
     }
 
+    @GetMapping("/pokemon-info")
+    public String pokemonInformation(@RequestParam("pokemonName") String name, Model model){
+        model.addAttribute("pokemon", pokemonRepo.findByName(name));
+        return "pokemon-info.html";
+    }
+
 }
