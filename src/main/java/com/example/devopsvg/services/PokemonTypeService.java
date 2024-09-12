@@ -17,10 +17,6 @@ public class PokemonTypeService {
         this.pokemonTypeRepo = pokemonTypeRepo;
     }
 
-    public PokemonType findPokemonTypeByName(String name){
-        return pokemonTypeRepo.findByName(name);
-    }
-
     public void saveTypeToDatabaseIfItDoesNotAlreadyExist(String name){
         Optional<PokemonType> tempPokemonType = Optional.ofNullable(
                 pokemonTypeRepo.findByName(name));
@@ -35,7 +31,7 @@ public class PokemonTypeService {
     public List<PokemonType> getTypesListFromApi(JsonNode pokemonData){
         List<PokemonType> types = new ArrayList<>();
         for (JsonNode typeNode : pokemonData.path("types")) {
-            types.add(findPokemonTypeByName(
+            types.add(pokemonTypeRepo.findByName(
                     typeNode.path("type").path("name").asText()));
         }
 
