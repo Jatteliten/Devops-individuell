@@ -5,15 +5,8 @@ import com.example.devopsvg.services.PokemonService;
 import com.example.devopsvg.services.PokemonTypeService;
 import com.example.devopsvg.util.JsonExtractor;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.ComponentScan;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 @ComponentScan
 public class FetchTypesAndMoveAndPokemonToDatabase implements CommandLineRunner {
@@ -33,9 +26,9 @@ public class FetchTypesAndMoveAndPokemonToDatabase implements CommandLineRunner 
     }
     @Override
     public void run(String... args) throws Exception {
-        fetchTypesToDatabase(jsonExtractor.createJsonNodeFromUrl(POKEMON_TYPES_LIST_API_URL));
-        fetchMovesToDatabase(jsonExtractor.createJsonNodeFromUrl(POKEMON_MOVES_LIST_API_URL));
-        fetchPokemonToDatabase(jsonExtractor.createJsonNodeFromUrl(POKEMON_LIST_API_URL));
+        fetchTypesToDatabase(jsonExtractor.fetchJsonFromUrl(POKEMON_TYPES_LIST_API_URL).path("results"));
+        fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(POKEMON_MOVES_LIST_API_URL).path("results"));
+        fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(POKEMON_LIST_API_URL).path("results"));
         System.out.println("*** Fetch complete ***");
     }
 
@@ -56,9 +49,9 @@ public class FetchTypesAndMoveAndPokemonToDatabase implements CommandLineRunner 
     }
 
     private void fetchMovesToDatabase(JsonNode resultsNode) {
-        for (JsonNode pokemonNode : resultsNode) {
+        for (JsonNode pokemonMoveNode : resultsNode) {
             pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(
-                    extractIdFromUrl(pokemonNode.path("url").asText()));
+                    extractIdFromUrl(pokemonMoveNode.path("url").asText()));
         }
         System.out.println("*** All moves added ***");
     }

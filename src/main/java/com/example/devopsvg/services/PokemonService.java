@@ -44,7 +44,7 @@ public class PokemonService {
         Pokemon newPokemon = createPokemonFromJson(pokemonData);
 
         pokemonRepo.save(newPokemon);
-        System.out.println(capitalizeFirstLetter(pokemonData.path("name").asText()) + " saved.");
+        System.out.println(newPokemon.getName() + " saved.");
     }
 
     public Pokemon createPokemonFromJson(JsonNode pokemonData){
@@ -67,14 +67,24 @@ public class PokemonService {
 
     public String findFlavorTextInSpeciesEntry(String id){
         try {
-            return jsonExtractor.createJsonNodeFromUrl("https://pokeapi.co/api/v2/pokemon-species/" + id)
-                    .path("flavor_text_entries")
-                    .path("0")
-                    .path("flavor_text")
-                    .asText();
+            JsonNode entries = jsonExtractor.fetchJsonFromUrl("https://pokeapi.co/api/v2/pokemon-species/" + id + "/")
+                    .path("flavor_text_entries");
+
+            for (JsonNode entry : entries) {
+                if (entry.path("language").path("name").asText().equals("en")) {
+                    return removeLineBreaksAndFormFeedCharactersFromFlavorText(
+                            entry.path("flavor_text").asText());
+                }
+            }
+
+            return "No English flavor text found.";
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String removeLineBreaksAndFormFeedCharactersFromFlavorText(String text){
+        return text.replace("\n", " ").replace("\u000c", " ");
     }
 
     public JsonNode getPokemonDataFromApi(int pokemonId) {

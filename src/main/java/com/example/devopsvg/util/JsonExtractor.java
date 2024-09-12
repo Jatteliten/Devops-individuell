@@ -14,13 +14,12 @@ public class JsonExtractor {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final HttpClient client = HttpClient.newHttpClient();
 
-    public JsonNode createJsonNodeFromUrl(String url) throws IOException, InterruptedException {
+    public JsonNode fetchJsonFromUrl(String url) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        JsonNode rootNode = objectMapper.readTree(response.body());
-        return rootNode.path("results");
+        return objectMapper.readTree(response.body());
     }
 }
