@@ -43,13 +43,13 @@ public class PokemonMoveService {
         pokemonMoveRepo.save(newPokemonMove);
     }
 
-    public PokemonMove createMoveFromJson(JsonNode pokemonMoveJson) {
+    public PokemonMove createMoveFromJson(JsonNode pokemonMoveData) {
         return PokemonMove.builder()
-                .name(pokemonMoveJson.path("name").asText())
-                .damageClass(pokemonMoveJson.path("damage_class")
+                .name(pokemonMoveData.path("name").asText())
+                .damageClass(pokemonMoveData.path("damage_class")
                         .path("name")
                         .asText())
-                .type(pokemonTypeRepo.findByName(pokemonMoveJson.path("type")
+                .type(pokemonTypeRepo.findByName(pokemonMoveData.path("type")
                         .path("name")
                         .asText()))
                 .build();

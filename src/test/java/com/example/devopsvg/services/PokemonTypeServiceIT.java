@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
+
 @SpringBootTest
 @ActiveProfiles("test")
 class PokemonTypeServiceIT {
@@ -34,9 +36,10 @@ class PokemonTypeServiceIT {
     void getAllTypeNamesListShouldReturnAllTypeNames(){
         pokemonTypeRepo.save(PokemonType.builder().name("grass").build());
         pokemonTypeRepo.save(PokemonType.builder().name("poison").build());
+        List<String> typeList = pokemonTypeService.getAllTypeNamesList();
 
-        Assertions.assertEquals("grass", pokemonTypeService.getAllTypeNamesList().get(0));
-        Assertions.assertEquals("poison", pokemonTypeService.getAllTypeNamesList().get(1));
+        Assertions.assertEquals("grass", typeList.get(0));
+        Assertions.assertEquals("poison", typeList.get(1));
     }
 
 }
