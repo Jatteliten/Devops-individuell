@@ -13,8 +13,8 @@ public class DevopsVgApplication {
     public static void main(String[] args) {
         if(args.length == 0) {
             SpringApplication.run(DevopsVgApplication.class, args);
-        }else if(Objects.equals(args[0], "fetch-types-and-pokemon")){
-            SpringApplication application = new SpringApplication(FetchTypesAndMoveAndPokemonToDatabase.class);
+        }else if(Objects.equals(args[0], "fetch-data")){
+            SpringApplication application = new SpringApplication(FetchData.class);
             application.setWebApplicationType(WebApplicationType.NONE);
             application.run(args);
         }

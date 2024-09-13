@@ -9,7 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan
-public class FetchTypesAndMoveAndPokemonToDatabase implements CommandLineRunner {
+public class FetchData implements CommandLineRunner {
     JsonExtractor jsonExtractor = new JsonExtractor();
     private final PokemonTypeService pokemonTypeService;
     private final PokemonService pokemonService;
@@ -18,8 +18,8 @@ public class FetchTypesAndMoveAndPokemonToDatabase implements CommandLineRunner 
     private static final String POKEMON_MOVES_LIST_API_URL = "https://pokeapi.co/api/v2/move?limit=10000&offset=0";
     private static final String POKEMON_LIST_API_URL = "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0";
 
-    public FetchTypesAndMoveAndPokemonToDatabase(PokemonTypeService pokemonTypeService, PokemonService pokemonService,
-                                                 PokemonMoveService pokemonMoveService){
+    public FetchData(PokemonTypeService pokemonTypeService, PokemonService pokemonService,
+                     PokemonMoveService pokemonMoveService){
         this.pokemonTypeService = pokemonTypeService;
         this.pokemonService = pokemonService;
         this.pokemonMoveService = pokemonMoveService;
