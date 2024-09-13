@@ -1,6 +1,6 @@
 package com.example.devopsvg.services;
 
-import com.example.devopsvg.dto.PokemonViews.PokemonListDto;
+import com.example.devopsvg.dto.pokemonViews.PokemonListDto;
 import com.example.devopsvg.model.Pokemon;
 import com.example.devopsvg.repos.PokemonRepo;
 import com.example.devopsvg.util.JsonExtractor;
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Service
 public class PokemonService {
-    JsonExtractor jsonExtractor = new JsonExtractor();
+    private final JsonExtractor jsonExtractor = new JsonExtractor();
     private static final String POKE_API_URL = "https://pokeapi.co/api/v2/pokemon/";
     private static final int API_ALTERNATE_FORM_LIMITER = 5000;
     private final RestTemplate restTemplate;

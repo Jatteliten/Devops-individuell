@@ -1,4 +1,4 @@
-package com.example.devopsvg.dto.PokemonViews;
+package com.example.devopsvg.dto.pokemonViews;
 
 import com.example.devopsvg.model.PokemonType;
 import lombok.AllArgsConstructor;

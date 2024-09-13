@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan
 public class FetchData implements CommandLineRunner {
-    JsonExtractor jsonExtractor = new JsonExtractor();
+    private final JsonExtractor jsonExtractor = new JsonExtractor();
     private final PokemonTypeService pokemonTypeService;
     private final PokemonService pokemonService;
     private final PokemonMoveService pokemonMoveService;

@@ -1,6 +1,6 @@
 package com.example.devopsvg.services;
 
-import com.example.devopsvg.dto.PokemonViews.PokemonListDto;
+import com.example.devopsvg.dto.pokemonViews.PokemonListDto;
 import com.example.devopsvg.model.Pokemon;
 import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonRepo;
