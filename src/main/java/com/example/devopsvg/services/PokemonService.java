@@ -61,15 +61,18 @@ public class PokemonService {
                         .path("official-artwork")
                         .path("front_default")
                         .asText())
-                .flavorText(findFlavorTextInSpeciesEntry(pokemonData.path("id").asText()))
+                .flavorText(findFlavorTextInSpeciesEntry(pokemonData
+                        .path("species")
+                        .path("url")
+                        .asText()))
                 .types(pokemonTypeService.getTypesListFromApi(pokemonData))
                 .moves(pokemonMoveService.getMoveListFromApi(pokemonData))
                 .build();
     }
 
-    public String findFlavorTextInSpeciesEntry(String id){
+    public String findFlavorTextInSpeciesEntry(String url){
         try {
-            JsonNode entries = jsonExtractor.fetchJsonFromUrl("https://pokeapi.co/api/v2/pokemon-species/" + id + "/")
+            JsonNode entries = jsonExtractor.fetchJsonFromUrl(url)
                     .path("flavor_text_entries");
 
             for (JsonNode entry : entries) {
@@ -85,10 +88,6 @@ public class PokemonService {
         }
     }
 
-    public String removeLineBreaksAndFormFeedCharactersFromFlavorText(String text){
-        return text.replace("\n", " ").replace("\u000c", " ");
-    }
-
     public JsonNode getPokemonDataFromApi(int pokemonId) {
         String url = POKE_API_URL + pokemonId;
         String jsonResponse = restTemplate.getForObject(url, String.class);
@@ -101,11 +100,12 @@ public class PokemonService {
         return null;
     }
 
-    public String capitalizeFirstLetter(String input) {
-        if (input == null || input.isEmpty()) {
-            return input;
-        }
-        return Character.toUpperCase(input.charAt(0)) + input.substring(1);
+    public List<PokemonListDto> getAllPokemonForList(){
+        return pokemonRepo.findAll().stream().map(this::convertPokemonToPokemonListDto).toList();
+    }
+
+    public List<PokemonListDto> getAllPokemonByTypeForList(String type){
+        return pokemonRepo.findAllByTypes_Name(type).stream().map(this::convertPokemonToPokemonListDto).toList();
     }
 
     public PokemonListDto convertPokemonToPokemonListDto(Pokemon pokemon){
@@ -117,12 +117,15 @@ public class PokemonService {
                 .build();
     }
 
-    public List<PokemonListDto> getAllPokemonForList(){
-        return pokemonRepo.findAll().stream().map(this::convertPokemonToPokemonListDto).toList();
+    public String removeLineBreaksAndFormFeedCharactersFromFlavorText(String text){
+        return text.replace("\n", " ").replace("\u000c", " ");
     }
 
-    public List<PokemonListDto> getAllPokemonByTypeForList(String type){
-        return pokemonRepo.findAllByTypes_Name(type).stream().map(this::convertPokemonToPokemonListDto).toList();
+    public String capitalizeFirstLetter(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+        return Character.toUpperCase(input.charAt(0)) + input.substring(1);
     }
 
 }
