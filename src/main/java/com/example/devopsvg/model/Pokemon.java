@@ -27,9 +27,11 @@ public class Pokemon {
     private String flavorText;
     private String spriteLink;
     private String artworkLink;
-    @ManyToMany(fetch = FetchType.EAGER)
+
+    @ManyToMany
     private List<PokemonType> types;
-    @ManyToMany(fetch = FetchType.EAGER)
+
+    @ManyToMany
     private List<PokemonMove> moves;
 
 }

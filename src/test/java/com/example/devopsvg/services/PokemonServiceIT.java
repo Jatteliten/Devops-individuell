@@ -2,7 +2,7 @@ package com.example.devopsvg.services;
 
 import com.example.devopsvg.repos.PokemonMoveRepo;
 import com.example.devopsvg.repos.PokemonRepo;
-import com.example.devopsvg.repos.PokemonTypeRepo;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +47,7 @@ class PokemonServiceIT {
     }
 
     @Test
+    @Transactional
     void savePokemonToDataBaseShouldSaveCorrectTypes(){
         pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist("grass");
         pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist("poison");
@@ -58,11 +59,14 @@ class PokemonServiceIT {
     }
 
     @Test
+    @Transactional
     void savePokemonToDataBaseShouldSaveCorrectMoves(){
         int tackleMoveId = 33;
+        String tackleName = "tackle";
         pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(tackleMoveId);
         pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(TEST_POKEMON_ID);
 
-        Assertions.assertEquals("tackle", pokemonRepo.findByName(TEST_POKEMON_NAME).getMoves().get(0).getName());
+        Assertions.assertTrue(pokemonRepo.findByName(TEST_POKEMON_NAME).getMoves()
+                .contains(pokemonMoveRepo.findByName(tackleName)));
     }
 }

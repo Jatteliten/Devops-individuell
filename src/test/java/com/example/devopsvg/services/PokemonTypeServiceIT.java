@@ -2,6 +2,7 @@ package com.example.devopsvg.services;
 
 import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonTypeRepo;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ class PokemonTypeServiceIT {
     }
 
     @Test
+    @Transactional
     void saveTypeShouldSaveType(){
         pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist("grass");
 
@@ -33,6 +35,7 @@ class PokemonTypeServiceIT {
     }
 
     @Test
+    @Transactional
     void getAllTypeNamesListShouldReturnAllTypeNames(){
         pokemonTypeRepo.save(PokemonType.builder().name("grass").build());
         pokemonTypeRepo.save(PokemonType.builder().name("poison").build());

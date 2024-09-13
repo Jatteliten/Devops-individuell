@@ -24,12 +24,11 @@ public class PokemonMove {
     private Long id;
 
     private String name;
-
     private String damageClass;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     private List<Pokemon> pokemon;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private PokemonType type;
 }
