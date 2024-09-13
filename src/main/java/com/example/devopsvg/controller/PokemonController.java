@@ -1,6 +1,7 @@
 package com.example.devopsvg.controller;
 
 import com.example.devopsvg.repos.PokemonRepo;
+import com.example.devopsvg.services.PokemonService;
 import com.example.devopsvg.services.PokemonTypeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,22 +14,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PokemonController {
     private final PokemonRepo pokemonRepo;
     private final PokemonTypeService pokemonTypeService;
+    private final PokemonService pokemonService;
 
-    public PokemonController(PokemonRepo pokemonRepo, PokemonTypeService pokemonTypeService) {
+    public PokemonController(PokemonRepo pokemonRepo, PokemonTypeService pokemonTypeService,
+                             PokemonService pokemonService) {
         this.pokemonRepo = pokemonRepo;
         this.pokemonTypeService = pokemonTypeService;
+        this.pokemonService = pokemonService;
     }
 
     @GetMapping("/list")
     public String pokemonList(Model model){
-        model.addAttribute("pokemonlist", pokemonRepo.findAll());
+        model.addAttribute("pokemonlist", pokemonService.getAllPokemonForList());
         model.addAttribute("types", pokemonTypeService.getAllTypeNamesList());
         return "pokemon-list.html";
     }
 
     @GetMapping("/list-by-type")
     public String pokemonListByColor(@RequestParam("type") String type, Model model) {
-        model.addAttribute("pokemonlist", pokemonRepo.findAllByTypes_Name(type));
+        model.addAttribute("pokemonlist", pokemonService.getAllPokemonByTypeForList(type));
         model.addAttribute("types", pokemonTypeService.getAllTypeNamesList());
         return "pokemon-list.html";
     }

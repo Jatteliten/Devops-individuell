@@ -1,5 +1,6 @@
 package com.example.devopsvg.services;
 
+import com.example.devopsvg.dto.PokemonViews.PokemonListDto;
 import com.example.devopsvg.model.Pokemon;
 import com.example.devopsvg.repos.PokemonRepo;
 import com.example.devopsvg.util.JsonExtractor;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -104,6 +106,23 @@ public class PokemonService {
             return input;
         }
         return Character.toUpperCase(input.charAt(0)) + input.substring(1);
+    }
+
+    public PokemonListDto convertPokemonToPokemonListDto(Pokemon pokemon){
+        return PokemonListDto.builder()
+                .name(pokemon.getName())
+                .pokedexId(pokemon.getPokedexId())
+                .spriteLink(pokemon.getSpriteLink())
+                .types(pokemon.getTypes())
+                .build();
+    }
+
+    public List<PokemonListDto> getAllPokemonForList(){
+        return pokemonRepo.findAll().stream().map(this::convertPokemonToPokemonListDto).toList();
+    }
+
+    public List<PokemonListDto> getAllPokemonByTypeForList(String type){
+        return pokemonRepo.findAllByTypes_Name(type).stream().map(this::convertPokemonToPokemonListDto).toList();
     }
 
 }
