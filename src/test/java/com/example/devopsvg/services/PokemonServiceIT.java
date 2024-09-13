@@ -1,5 +1,6 @@
 package com.example.devopsvg.services;
 
+import com.example.devopsvg.repos.PokemonMoveRepo;
 import com.example.devopsvg.repos.PokemonRepo;
 import com.example.devopsvg.repos.PokemonTypeRepo;
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +19,12 @@ class PokemonServiceIT {
     PokemonService pokemonService;
     @Autowired
     PokemonTypeService pokemonTypeService;
+    @Autowired
+    PokemonMoveService pokemonMoveService;
+    @Autowired
+    PokemonMoveRepo pokemonMoveRepo;
     private final String TEST_POKEMON_NAME = "Bulbasaur";
+    private final int TEST_POKEMON_ID = 1;
 
     @BeforeEach
     void setUp() {
@@ -34,7 +40,7 @@ class PokemonServiceIT {
 
     @Test
     void savePokemonToDataBaseShouldSaveCorrectPokemon(){
-        pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(1);
+        pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(TEST_POKEMON_ID);
 
         Assertions.assertEquals(1, pokemonRepo.findByName(TEST_POKEMON_NAME).getPokedexId());
         Assertions.assertEquals(TEST_POKEMON_NAME, pokemonRepo.findByName(TEST_POKEMON_NAME).getName());
@@ -44,10 +50,19 @@ class PokemonServiceIT {
     void savePokemonToDataBaseShouldSaveCorrectTypes(){
         pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist("grass");
         pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist("poison");
-        pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(1);
+        pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(TEST_POKEMON_ID);
 
         Assertions.assertEquals(2, pokemonRepo.findByName(TEST_POKEMON_NAME).getTypes().size());
         Assertions.assertEquals("grass", pokemonRepo.findByName(TEST_POKEMON_NAME).getTypes().get(0).getName());
         Assertions.assertEquals("poison", pokemonRepo.findByName(TEST_POKEMON_NAME).getTypes().get(1).getName());
+    }
+
+    @Test
+    void savePokemonToDataBaseShouldSaveCorrectMoves(){
+        int tackleMoveId = 33;
+        pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(tackleMoveId);
+        pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(TEST_POKEMON_ID);
+
+        Assertions.assertEquals("tackle", pokemonRepo.findByName(TEST_POKEMON_NAME).getMoves().get(0).getName());
     }
 }

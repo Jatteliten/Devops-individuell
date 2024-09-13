@@ -28,8 +28,8 @@ public class PokemonMoveService {
         this.pokemonMoveRepo = pokemonMoveRepo;
     }
 
-    public void saveMoveToDatabaseIfItDoesNotAlreadyExist(int pokemonId){
-        JsonNode pokemonData = getMoveDataFromApi(pokemonId);
+    public void saveMoveToDatabaseIfItDoesNotAlreadyExist(int pokemonMoveId){
+        JsonNode pokemonData = getMoveDataFromApi(pokemonMoveId);
         Optional<PokemonMove> tempPokemonMove = Optional.ofNullable(
                 pokemonMoveRepo.findByName(pokemonData.path("name").asText()));
         if(tempPokemonMove.isEmpty()){

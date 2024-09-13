@@ -29,7 +29,7 @@ public class Pokemon {
     private String artworkLink;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<PokemonType> types;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<PokemonMove> moves;
 
 }

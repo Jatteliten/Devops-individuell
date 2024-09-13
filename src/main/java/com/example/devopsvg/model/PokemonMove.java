@@ -1,6 +1,7 @@
 package com.example.devopsvg.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
@@ -26,9 +27,9 @@ public class PokemonMove {
 
     private String damageClass;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Pokemon> pokemon;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private PokemonType type;
 }
