@@ -23,7 +23,7 @@ class PokemonMoveServiceTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    void repoShouldReturnCorrectPokemonWhenFindingByName() {
+    void repoShouldReturnCorrectMoveWhenFindingByName() {
         String testName = "pound";
         String testClass = "physical";
         Mockito.when(pokemonMoveRepo.findByName(testName)).thenReturn(
@@ -35,7 +35,7 @@ class PokemonMoveServiceTest {
         Assertions.assertEquals(testClass, pokemonMoveRepo.findByName(testName).getDamageClass());
     }
     @Test
-    void createPokemonMoveFromJsonShouldCreateCorrectPokemon() {
+    void createPokemonMoveFromJsonShouldCreateCorrectMove() {
         PokemonMove pokemonMove;
 
         try {
