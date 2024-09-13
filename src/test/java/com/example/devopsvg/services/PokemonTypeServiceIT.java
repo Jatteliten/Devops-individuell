@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class PokemonTypeServiceTestIntegration {
+class PokemonTypeServiceIT {
     @Autowired
     PokemonTypeRepo pokemonTypeRepo;
     @Autowired
