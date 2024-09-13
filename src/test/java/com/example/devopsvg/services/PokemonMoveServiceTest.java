@@ -39,7 +39,7 @@ class PokemonMoveServiceTest {
         PokemonMove pokemonMove;
 
         try {
-            pokemonMove = pokemonMoveService.createPokemonMoveFromJson(
+            pokemonMove = pokemonMoveService.createMoveFromJson(
                     objectMapper.readTree(
                             new String(
                                     Files.readAllBytes(Paths.get("src/test/resources/move-pound.json")))));

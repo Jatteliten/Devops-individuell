@@ -29,21 +29,21 @@ public class PokemonMoveService {
     }
 
     public void saveMoveToDatabaseIfItDoesNotAlreadyExist(int pokemonId){
-        JsonNode pokemonData = getPokemonDMoveDataFromApi(pokemonId);
+        JsonNode pokemonData = getMoveDataFromApi(pokemonId);
         Optional<PokemonMove> tempPokemonMove = Optional.ofNullable(
                 pokemonMoveRepo.findByName(pokemonData.path("name").asText()));
         if(tempPokemonMove.isEmpty()){
-            savePokemonMoveToDatabase(pokemonData);
+            saveMoveToDatabase(pokemonData);
         }
     }
 
-    private void savePokemonMoveToDatabase(JsonNode pokemonMoveData){
-        PokemonMove newPokemonMove = createPokemonMoveFromJson(pokemonMoveData);
+    private void saveMoveToDatabase(JsonNode pokemonMoveData){
+        PokemonMove newPokemonMove = createMoveFromJson(pokemonMoveData);
 
         pokemonMoveRepo.save(newPokemonMove);
     }
 
-    public PokemonMove createPokemonMoveFromJson(JsonNode pokemonMoveJson) {
+    public PokemonMove createMoveFromJson(JsonNode pokemonMoveJson) {
         return PokemonMove.builder()
                 .name(pokemonMoveJson.path("name").asText())
                 .damageClass(pokemonMoveJson.path("damage_class")
@@ -65,7 +65,7 @@ public class PokemonMoveService {
         return moves;
     }
 
-    public JsonNode getPokemonDMoveDataFromApi(int pokemonMoveId) {
+    public JsonNode getMoveDataFromApi(int pokemonMoveId) {
         String url = POKE_API_URL + pokemonMoveId;
         String jsonResponse = restTemplate.getForObject(url, String.class);
 
