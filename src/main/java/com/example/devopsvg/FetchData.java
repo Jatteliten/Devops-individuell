@@ -17,6 +17,7 @@ public class FetchData implements CommandLineRunner {
     private static final String POKEMON_TYPES_LIST_API_URL = "https://pokeapi.co/api/v2/type";
     private static final String POKEMON_MOVES_LIST_API_URL = "https://pokeapi.co/api/v2/move?limit=10000&offset=0";
     private static final String POKEMON_LIST_API_URL = "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0";
+    private static final int API_ALTERNATE_FORM_LIMITER = 5000;
 
     public FetchData(PokemonTypeService pokemonTypeService, PokemonService pokemonService,
                      PokemonMoveService pokemonMoveService){
@@ -42,8 +43,10 @@ public class FetchData implements CommandLineRunner {
 
     private void fetchPokemonToDatabase(JsonNode resultsNode) {
         for (JsonNode pokemonNode : resultsNode) {
-            pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(
-                    extractIdFromUrl(pokemonNode.path("url").asText()));
+            if(extractIdFromUrl(pokemonNode.path("url").asText()) < API_ALTERNATE_FORM_LIMITER) {
+                pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(
+                        extractIdFromUrl(pokemonNode.path("url").asText()));
+            }
         }
         System.out.println("*** All Pokémon added ***");
     }

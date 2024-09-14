@@ -17,7 +17,6 @@ import java.util.Optional;
 public class PokemonService {
     private final JsonExtractor jsonExtractor = new JsonExtractor();
     private static final String POKE_API_URL = "https://pokeapi.co/api/v2/pokemon/";
-    private static final int API_ALTERNATE_FORM_LIMITER = 5000;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final PokemonRepo pokemonRepo;
@@ -37,7 +36,7 @@ public class PokemonService {
         JsonNode pokemonData = getPokemonDataFromApi(pokemonId);
         Optional<Pokemon> tempPokemon = Optional.ofNullable(
                 pokemonRepo.findByName(pokemonData.path("name").asText()));
-        if(tempPokemon.isEmpty() && pokemonData.path("id").asInt() < API_ALTERNATE_FORM_LIMITER){
+        if(tempPokemon.isEmpty()){
             savePokemonToDatabase(pokemonData);
         }
     }
