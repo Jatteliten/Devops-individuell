@@ -114,4 +114,16 @@ class PokemonServiceIT {
                 .contains(pokemonMoveRepo.findByName(tackleName)));
     }
 
+    @Test
+    @Transactional
+    void savePokemonToDataBaseShouldSaveCorrectFlavorText(){
+        pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(TEST_POKEMON_ID);
+
+        String expectedFlavorText = "A strange seed was planted on its back at birth. " +
+                "The plant sprouts and grows with this POKéMON.";
+        String actualFlavorText = pokemonRepo.findByName(TEST_POKEMON_NAME).getFlavorText();
+
+        Assertions.assertEquals(expectedFlavorText, actualFlavorText);
+    }
+
 }
