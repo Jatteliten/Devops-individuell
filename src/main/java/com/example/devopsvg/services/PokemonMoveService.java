@@ -8,9 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 public class PokemonMoveService {
@@ -45,7 +46,9 @@ public class PokemonMoveService {
 
     public PokemonMove createMoveFromJson(JsonNode pokemonMoveData) {
         return PokemonMove.builder()
-                .name(pokemonMoveData.path("name").asText())
+                .name(pokemonMoveData
+                        .path("name")
+                        .asText())
                 .damageClass(pokemonMoveData.path("damage_class")
                         .path("name")
                         .asText())
@@ -56,13 +59,13 @@ public class PokemonMoveService {
     }
 
     public List<PokemonMove> getMoveListFromApi(JsonNode pokemonData){
-        List<PokemonMove> moves = new ArrayList<>();
-        for (JsonNode typeNode : pokemonData.path("moves")) {
-            moves.add(pokemonMoveRepo.findByName(
-                    typeNode.path("move").path("name").asText()));
-        }
-
-        return moves;
+        return StreamSupport.stream(pokemonData.path("moves").spliterator(), false)
+                .map(typeNode -> pokemonMoveRepo.findByName(typeNode
+                        .path("move")
+                        .path("name")
+                        .asText()))
+                .sorted(Comparator.comparing(move -> move.getType().getName()))
+                .toList();
     }
 
     public JsonNode getMoveDataFromApi(int pokemonMoveId) {

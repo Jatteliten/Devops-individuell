@@ -37,6 +37,16 @@ public class PokemonTypeService {
         }
     }
 
+    public List<PokemonType> getTypesListFromApi(JsonNode pokemonData){
+        List<PokemonType> types = new ArrayList<>();
+        for (JsonNode typeNode : pokemonData.path("types")) {
+            types.add(pokemonTypeRepo.findByName(
+                    typeNode.path("type").path("name").asText()));
+        }
+
+        return types;
+    }
+
     @Transactional
     public void addTypeRelationships(){
         List<PokemonType> types = pokemonTypeRepo.findAll();
@@ -60,16 +70,6 @@ public class PokemonTypeService {
     private void addDamageModifier(JsonNode typeData, String damageMultiplier, List<PokemonType> typeList){
         typeData.path("damage_relations").path(damageMultiplier).forEach(multiplierType ->
                 typeList.add(pokemonTypeRepo.findByName(multiplierType.path("name").asText())));
-    }
-
-    public List<PokemonType> getTypesListFromApi(JsonNode pokemonData){
-        List<PokemonType> types = new ArrayList<>();
-        for (JsonNode typeNode : pokemonData.path("types")) {
-            types.add(pokemonTypeRepo.findByName(
-                    typeNode.path("type").path("name").asText()));
-        }
-
-        return types;
     }
 
     public List<String> getAllTypeNamesList(){
