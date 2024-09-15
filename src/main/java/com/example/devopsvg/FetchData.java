@@ -40,7 +40,6 @@ public class FetchData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         fetchTypesToDatabase(jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
-        pokemonTypeService.addTypeRelationships();
         fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(
                 removeResponseLimit(pokemonMovesApiUrl)).path("results"));
         fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(
@@ -54,6 +53,8 @@ public class FetchData implements CommandLineRunner {
                     pokemonTypeNode.path("name").asText());
         }
         System.out.println("*** All types added ***");
+        pokemonTypeService.addTypeRelationships();
+        System.out.println("*** Type relationships added ***");
     }
 
     private void fetchPokemonToDatabase(JsonNode resultsNode) {

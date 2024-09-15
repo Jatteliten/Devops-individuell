@@ -64,7 +64,6 @@ public class PokemonTypeService {
                 }
             }
         }
-        System.out.println("*** Type relationships added ***");
     }
 
     private void addDamageModifier(JsonNode typeData, String damageMultiplier, List<PokemonType> typeList){
