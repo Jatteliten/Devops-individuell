@@ -4,7 +4,6 @@ import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonTypeRepo;
 import com.example.devopsvg.util.JsonExtractor;
 import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +35,7 @@ public class PokemonTypeService {
         }
     }
 
-    public List<PokemonType> getTypesListFromApi(JsonNode pokemonData){
+    public List<PokemonType> getPokemonTypesListFromApi(JsonNode pokemonData){
         List<PokemonType> types = new ArrayList<>();
         for (JsonNode typeNode : pokemonData.path("types")) {
             types.add(pokemonTypeRepo.findByName(
@@ -46,7 +45,6 @@ public class PokemonTypeService {
         return types;
     }
 
-    @Transactional
     public void addTypeRelationships(){
         List<PokemonType> types = pokemonTypeRepo.findAll();
 
@@ -62,8 +60,13 @@ public class PokemonTypeService {
     }
 
     private void addDamageModifier(JsonNode typeData, String damageMultiplier, List<PokemonType> typeList){
-        typeData.path("damage_relations").path(damageMultiplier).forEach(multiplierType ->
-                typeList.add(pokemonTypeRepo.findByName(multiplierType.path("name").asText())));
+        typeData
+                .path("damage_relations")
+                .path(damageMultiplier)
+                .forEach(multiplierType ->
+                    typeList.add(pokemonTypeRepo.findByName(multiplierType
+                            .path("name")
+                            .asText())));
     }
 
     public List<String> getAllTypeNamesList(){

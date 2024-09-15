@@ -71,7 +71,7 @@ public class PokemonService {
                         .path("species")
                         .path("url")
                         .asText()))
-                .types(pokemonTypeService.getTypesListFromApi(pokemonData))
+                .types(pokemonTypeService.getPokemonTypesListFromApi(pokemonData))
                 .moves(pokemonMoveService.getMoveListFromApi(pokemonData))
                 .build();
     }

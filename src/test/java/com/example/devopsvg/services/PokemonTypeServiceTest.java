@@ -37,7 +37,7 @@ class PokemonTypeServiceTest {
     void getTypesListFromApiShouldReturnCorrectAmountOfTypes(){
         List<PokemonType> actualList;
         try {
-            actualList = pokemonTypeService.getTypesListFromApi(objectMapper.readTree(
+            actualList = pokemonTypeService.getPokemonTypesListFromApi(objectMapper.readTree(
                     new String(
                             Files.readAllBytes(Paths.get("src/test/resources/bulbasaur.json")))));
         } catch (IOException e) {
