@@ -25,4 +25,13 @@ public class PokemonType {
 
     @ManyToMany
     private List<Pokemon> pokemon;
+
+    @ManyToMany
+    private List<PokemonType> doubleDamageFrom;
+
+    @ManyToMany
+    private List<PokemonType> halfDamageFrom;
+
+    @ManyToMany
+    private List<PokemonType> noDamageFrom;
 }

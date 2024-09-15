@@ -2,6 +2,7 @@ package com.example.devopsvg.services;
 
 import com.example.devopsvg.dto.pokemonViews.PokemonListDto;
 import com.example.devopsvg.model.Pokemon;
+import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonRepo;
 import com.example.devopsvg.util.JsonExtractor;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +12,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
 
 @Service
 public class PokemonService {
@@ -116,6 +122,62 @@ public class PokemonService {
                 .spriteLink(pokemon.getSpriteLink())
                 .types(pokemon.getTypes())
                 .build();
+    }
+
+    public Map<PokemonType, Double> calculateDamageTakenMultipliers(Pokemon pokemon){
+        Map<PokemonType, Double> damageMultipliers = new HashMap<>();
+        if(pokemon.getTypes().size() == 1){
+            damageMultipliers = calculateDamageTakenMultipliersFromOneType(pokemon.getTypes().get(0));
+        }else{
+            damageMultipliers = calculateDamageTakenMultipliersFromTwoTypes(pokemon);
+        }
+        return damageMultipliers.entrySet()
+                .stream()
+                .sorted(Map.Entry.<PokemonType, Double>comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+    }
+
+    public Map<PokemonType, Double> calculateDamageTakenMultipliersFromOneType(PokemonType pokemonType){
+        Map<PokemonType, Double> damageMultipliers = new HashMap<>();
+        for(PokemonType type: pokemonType.getDoubleDamageFrom()){
+            damageMultipliers.put(type, 2.0);
+        }
+        for(PokemonType type: pokemonType.getHalfDamageFrom()){
+            damageMultipliers.put(type, 0.5);
+        }
+        for (PokemonType type: pokemonType.getNoDamageFrom()){
+            damageMultipliers.put(type, 0.0);
+        }
+        return damageMultipliers;
+    }
+
+    public Map<PokemonType, Double> calculateDamageTakenMultipliersFromTwoTypes(Pokemon pokemon){
+        Map<PokemonType, Double> firstTypeMultipliers = calculateDamageTakenMultipliersFromOneType(
+                pokemon.getTypes().get(0));
+        Map<PokemonType, Double> secondTypeMultipliers = calculateDamageTakenMultipliersFromOneType(
+                pokemon.getTypes().get(1));
+
+        Map<PokemonType, Double> addedMultipliers = new HashMap<>();
+
+        for(Map.Entry<PokemonType, Double> type : firstTypeMultipliers.entrySet()){
+            if(secondTypeMultipliers.containsKey(type.getKey())){
+                addedMultipliers.put(type.getKey(), type.getValue() * secondTypeMultipliers.get(type.getKey()));
+            } else{
+                addedMultipliers.put(type.getKey(), type.getValue());
+            }
+        }
+
+        for(Map.Entry<PokemonType, Double> type : secondTypeMultipliers.entrySet()){
+            if(!addedMultipliers.containsKey(type.getKey())){
+                addedMultipliers.put(type.getKey(), type.getValue());
+            }
+        }
+        return addedMultipliers;
     }
 
     public String removeLineBreaksAndFormFeedCharactersFromFlavorText(String text){

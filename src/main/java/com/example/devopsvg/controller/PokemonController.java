@@ -47,6 +47,8 @@ public class PokemonController {
     @GetMapping("/pokemon-info")
     public String pokemonInformation(@RequestParam("pokemonName") String name, Model model){
         model.addAttribute("pokemon", pokemonRepo.findByName(name));
+        model.addAttribute("pokemonTypeMatchUps",
+                pokemonService.calculateDamageTakenMultipliers(pokemonRepo.findByName(name)));
         return "pokemon-info.html";
     }
 

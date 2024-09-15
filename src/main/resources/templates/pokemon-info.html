@@ -32,19 +32,34 @@
                 <p th:text="${pokemon.flavorText}" style="white-space: pre-wrap;">Text</p>
             </div>
 
-            <div class="dropdown show" style="padding-top: 5px;">
-                <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Moves
-                </a>
-
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="max-height: 300px; overflow-y: auto;">
-                    <a th:each="move : ${pokemon.moves}"
-                       th:text="${move.name}"
-                       th:class="'dropdown-item type-button type-' + ${move.type.name}"
-                       style="pointer-events: none; cursor: default; text-decoration: none; width: 150px;">
+            <div class="dropdown-container">
+                <div class="dropdown show" style="padding-top: 5px;">
+                    <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Moves
                     </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="max-height: 300px; overflow-y: auto;">
+                        <a th:each="move : ${pokemon.moves}"
+                           th:text="${move.name}"
+                           th:class="'dropdown-item type-button type-' + ${move.type.name}"
+                           style="pointer-events: none; cursor: default; text-decoration: none; width: 150px;">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="dropdown show" style="padding-top: 5px;">
+                    <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Damage taken from
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="max-height: 300px; overflow-y: auto;">
+                        <a th:each="type : ${pokemonTypeMatchUps}"
+                           th:text="${type.value + ' x ' + type.key.name}"
+                           th:class="'dropdown-item type-button type-' + ${type.key.name}"
+                           style="pointer-events: none; cursor: default; text-decoration: none; width: 150px;">
+                        </a>
+                    </div>
                 </div>
             </div>
+
 
         </div>
     </div>

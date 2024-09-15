@@ -40,6 +40,7 @@ public class FetchData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         fetchTypesToDatabase(jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
+        pokemonTypeService.addTypeRelationships();
         fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(
                 removeResponseLimit(pokemonMovesApiUrl)).path("results"));
         fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(
