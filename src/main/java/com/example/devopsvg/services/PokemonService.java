@@ -4,6 +4,7 @@ import com.example.devopsvg.dto.pokemonViews.PokemonListDto;
 import com.example.devopsvg.model.Pokemon;
 import com.example.devopsvg.repos.PokemonRepo;
 import com.example.devopsvg.util.JsonExtractor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,12 +17,14 @@ import java.util.Optional;
 @Service
 public class PokemonService {
     private final JsonExtractor jsonExtractor = new JsonExtractor();
-    private static final String POKE_API_URL = "https://pokeapi.co/api/v2/pokemon/";
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final PokemonRepo pokemonRepo;
     private final PokemonTypeService pokemonTypeService;
     private final PokemonMoveService pokemonMoveService;
+
+    @Value("${pokemon.list.api.url}")
+    private String pokemonListApiUrl;
 
     public PokemonService(RestTemplate restTemplate, ObjectMapper objectMapper,
                           PokemonRepo pokemonRepo, PokemonTypeService pokemonTypeService, PokemonMoveService pokemonMoveService) {
@@ -88,8 +91,7 @@ public class PokemonService {
     }
 
     public JsonNode getPokemonDataFromApi(int pokemonId) {
-        String url = POKE_API_URL + pokemonId;
-        String jsonResponse = restTemplate.getForObject(url, String.class);
+        String jsonResponse = restTemplate.getForObject(pokemonListApiUrl + pokemonId, String.class);
 
         try {
             return objectMapper.readTree(jsonResponse);

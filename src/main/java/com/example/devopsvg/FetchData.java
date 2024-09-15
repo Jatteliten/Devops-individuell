@@ -5,6 +5,7 @@ import com.example.devopsvg.services.PokemonService;
 import com.example.devopsvg.services.PokemonTypeService;
 import com.example.devopsvg.util.JsonExtractor;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -14,10 +15,21 @@ public class FetchData implements CommandLineRunner {
     private final PokemonTypeService pokemonTypeService;
     private final PokemonService pokemonService;
     private final PokemonMoveService pokemonMoveService;
-    private static final String POKEMON_TYPES_LIST_API_URL = "https://pokeapi.co/api/v2/type";
-    private static final String POKEMON_MOVES_LIST_API_URL = "https://pokeapi.co/api/v2/move?limit=10000&offset=0";
-    private static final String POKEMON_LIST_API_URL = "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0";
-    private static final int API_ALTERNATE_FORM_LIMITER = 5000;
+
+    @Value("${pokemon.types.api.url}")
+    private String pokemonTypesApiUrl;
+
+    @Value("${pokemon.moves.api.url}")
+    private String pokemonMovesApiUrl;
+
+    @Value("${pokemon.list.api.url}")
+    private String pokemonListApiUrl;
+
+    @Value("${pokemon.api.alternate_form_limiter}")
+    private int alternateFormLimiter;
+
+    @Value("${pokemon.api.remove_response_limit}")
+    private String removeResponseLimit;
 
     public FetchData(PokemonTypeService pokemonTypeService, PokemonService pokemonService,
                      PokemonMoveService pokemonMoveService){
@@ -27,9 +39,11 @@ public class FetchData implements CommandLineRunner {
     }
     @Override
     public void run(String... args) throws Exception {
-        fetchTypesToDatabase(jsonExtractor.fetchJsonFromUrl(POKEMON_TYPES_LIST_API_URL).path("results"));
-        fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(POKEMON_MOVES_LIST_API_URL).path("results"));
-        fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(POKEMON_LIST_API_URL).path("results"));
+        fetchTypesToDatabase(jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
+        fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(
+                removeResponseLimit(pokemonMovesApiUrl)).path("results"));
+        fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(
+                removeResponseLimit(pokemonListApiUrl)).path("results"));
         System.out.println("*** Fetch complete ***");
     }
 
@@ -43,7 +57,7 @@ public class FetchData implements CommandLineRunner {
 
     private void fetchPokemonToDatabase(JsonNode resultsNode) {
         for (JsonNode pokemonNode : resultsNode) {
-            if(extractIdFromUrl(pokemonNode.path("url").asText()) < API_ALTERNATE_FORM_LIMITER) {
+            if(extractIdFromUrl(pokemonNode.path("url").asText()) < alternateFormLimiter) {
                 pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(
                         extractIdFromUrl(pokemonNode.path("url").asText()));
             }
@@ -65,5 +79,9 @@ public class FetchData implements CommandLineRunner {
         int lastSlashIndex = url.lastIndexOf("/");
 
         return Integer.parseInt(url.substring(lastSlashIndex + 1));
+    }
+
+    private String removeResponseLimit(String url){
+        return url.substring(0, url.length() -1) + removeResponseLimit;
     }
 }
