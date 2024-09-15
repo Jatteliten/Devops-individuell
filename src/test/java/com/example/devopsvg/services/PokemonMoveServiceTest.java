@@ -2,17 +2,13 @@ package com.example.devopsvg.services;
 
 import com.example.devopsvg.model.PokemonMove;
 import com.example.devopsvg.repos.PokemonMoveRepo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import utils.JsonTestUtils;
 
 @SpringBootTest
 class PokemonMoveServiceTest {
@@ -20,7 +16,7 @@ class PokemonMoveServiceTest {
     PokemonMoveRepo pokemonMoveRepo;
     @Autowired
     PokemonMoveService pokemonMoveService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    JsonTestUtils jsonTestUtils = new JsonTestUtils();
 
     @Test
     void repoShouldReturnCorrectMoveWhenFindingByName() {
@@ -36,16 +32,8 @@ class PokemonMoveServiceTest {
     }
     @Test
     void createPokemonMoveFromJsonShouldCreateCorrectMove() {
-        PokemonMove pokemonMove;
-
-        try {
-            pokemonMove = pokemonMoveService.createMoveFromJson(
-                    objectMapper.readTree(
-                            new String(
-                                    Files.readAllBytes(Paths.get("src/test/resources/move-pound.json")))));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        PokemonMove pokemonMove= pokemonMoveService.createMoveFromJson(
+                jsonTestUtils.getJsonFromFile("src/test/resources/move-pound.json"));
 
         Assertions.assertEquals("pound", pokemonMove.getName());
     }

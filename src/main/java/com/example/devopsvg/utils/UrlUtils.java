@@ -1,4 +1,4 @@
-package com.example.devopsvg.util;
+package com.example.devopsvg.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

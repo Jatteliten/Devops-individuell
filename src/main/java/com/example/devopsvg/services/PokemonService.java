@@ -4,7 +4,7 @@ import com.example.devopsvg.dto.pokemonViews.PokemonListDto;
 import com.example.devopsvg.model.Pokemon;
 import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonRepo;
-import com.example.devopsvg.util.JsonExtractor;
+import com.example.devopsvg.utils.JsonExtractor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

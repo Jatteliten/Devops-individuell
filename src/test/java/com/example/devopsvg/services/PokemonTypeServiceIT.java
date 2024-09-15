@@ -2,7 +2,6 @@ package com.example.devopsvg.services;
 
 import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonTypeRepo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,10 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import utils.JsonTestUtils;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +21,7 @@ class PokemonTypeServiceIT {
     PokemonTypeRepo pokemonTypeRepo;
     @Autowired
     PokemonTypeService pokemonTypeService;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
+    JsonTestUtils jsonTestUtils = new JsonTestUtils();
 
     @BeforeEach
     void setUp() {
@@ -48,16 +43,11 @@ class PokemonTypeServiceIT {
         String resistName = "water";
         String typeName = "grass";
 
-        try {
-            objectMapper.readTree(
-                            new String(
-                                    Files.readAllBytes(Paths.get("src/test/resources/types.json"))))
-                    .forEach(typeData ->
-                            pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
-                                    typeData.path("name").asText()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        jsonTestUtils.getJsonFromFile("src/test/resources/types.json")
+                .forEach(typeData ->
+                        pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
+                                typeData.path("name").asText()));
+
         pokemonTypeRepo.findAll().forEach(type ->{
             type.setHalfDamageFrom(new ArrayList<>());
             type.setDoubleDamageFrom(new ArrayList<>());

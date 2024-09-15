@@ -4,17 +4,14 @@ import com.example.devopsvg.dto.pokemonViews.PokemonListDto;
 import com.example.devopsvg.model.Pokemon;
 import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonRepo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import utils.JsonTestUtils;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 
@@ -24,7 +21,7 @@ class PokemonServiceTest {
     PokemonRepo pokemonRepo;
     @Autowired
     PokemonService pokemonService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    JsonTestUtils jsonTestUtils = new JsonTestUtils();
 
 
     @Test
@@ -47,16 +44,8 @@ class PokemonServiceTest {
 
     @Test
     void createPokemonFromJsonShouldCreateCorrectPokemon() {
-        Pokemon pokemon;
-
-        try {
-            pokemon = pokemonService.createPokemonFromJson(
-                    objectMapper.readTree(
-                            new String(
-                                    Files.readAllBytes(Paths.get("src/test/resources/bulbasaur.json")))));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Pokemon pokemon = pokemonService.createPokemonFromJson(
+                jsonTestUtils.getJsonFromFile("src/test/resources/bulbasaur.json"));
 
         Assertions.assertEquals("Bulbasaur", pokemon.getName());
         Assertions.assertEquals(1, pokemon.getPokedexId());

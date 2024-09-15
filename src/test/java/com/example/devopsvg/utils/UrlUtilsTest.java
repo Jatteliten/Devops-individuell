@@ -1,4 +1,4 @@
-package com.example.devopsvg.util;
+package com.example.devopsvg.utils;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

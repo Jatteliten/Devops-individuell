@@ -1,4 +1,4 @@
-package com.example.devopsvg.util;
+package com.example.devopsvg.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

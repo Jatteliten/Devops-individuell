@@ -2,7 +2,7 @@ package com.example.devopsvg.services;
 
 import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonTypeRepo;
-import com.example.devopsvg.util.JsonExtractor;
+import com.example.devopsvg.utils.JsonExtractor;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
