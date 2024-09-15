@@ -7,8 +7,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import utils.JsonTestUtils;
 
 import java.util.ArrayList;
@@ -16,12 +18,16 @@ import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@TestPropertySource("classpath:application-test.properties")
 class PokemonTypeServiceIT {
     @Autowired
     PokemonTypeRepo pokemonTypeRepo;
     @Autowired
     PokemonTypeService pokemonTypeService;
     JsonTestUtils jsonTestUtils = new JsonTestUtils();
+
+    @Value("${filepath.types.json}")
+    private String typesFilePath;
 
     @BeforeEach
     void setUp() {
@@ -43,7 +49,7 @@ class PokemonTypeServiceIT {
         String resistName = "water";
         String typeName = "grass";
 
-        jsonTestUtils.getJsonFromFile("src/test/resources/types.json")
+        jsonTestUtils.getJsonFromFile(typesFilePath)
                 .forEach(typeData ->
                         pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
                                 typeData.path("name").asText()));

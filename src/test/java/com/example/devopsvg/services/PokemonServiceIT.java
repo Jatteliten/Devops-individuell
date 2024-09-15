@@ -11,8 +11,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import utils.JsonTestUtils;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import java.util.Map;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@TestPropertySource("classpath:application-test.properties")
 class PokemonServiceIT {
     @Autowired
     PokemonRepo pokemonRepo;
@@ -38,6 +41,12 @@ class PokemonServiceIT {
     private final String TEST_POKEMON_NAME = "Bulbasaur";
     private final int TEST_POKEMON_ID = 1;
 
+    @Value("${filepath.types.json}")
+    private String typesFilePath;
+
+    @Value("${filepath.bulbasaur.json}")
+    private String bulbasaurFilePath;
+
     @BeforeEach
     void setUp() {
         pokemonRepo.deleteAll();
@@ -48,14 +57,14 @@ class PokemonServiceIT {
     }
 
     private void addTypes(){
-        jsonTestUtils.getJsonFromFile("src/test/resources/types.json")
+        jsonTestUtils.getJsonFromFile(typesFilePath)
                 .forEach(typeData ->
                         pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
                                 typeData.path("name").asText()));
     }
 
     private void addBulbasaurMoves(){
-        jsonTestUtils.getJsonFromFile("src/test/resources/bulbasaur.json")
+        jsonTestUtils.getJsonFromFile(bulbasaurFilePath)
                 .path("moves")
                 .forEach(typeData ->
                         pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(urlUtils.extractIdFromUrl(
@@ -122,7 +131,7 @@ class PokemonServiceIT {
         double damageFromFire = 2.0;
         double damageFromGrass = 0.25;
 
-        jsonTestUtils.getJsonFromFile("src/test/resources/types.json")
+        jsonTestUtils.getJsonFromFile(typesFilePath)
                     .forEach(typeData ->
                             pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
                                     typeData.path("name").asText()));

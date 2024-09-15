@@ -23,7 +23,6 @@ class PokemonServiceTest {
     PokemonService pokemonService;
     JsonTestUtils jsonTestUtils = new JsonTestUtils();
 
-
     @Test
     void repoShouldReturnCorrectPokemonWhenFindingByName() {
         String testName = "bulbasaur";

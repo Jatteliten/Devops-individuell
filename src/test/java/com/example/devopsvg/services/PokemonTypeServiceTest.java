@@ -6,14 +6,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 import utils.JsonTestUtils;
 
 import java.util.List;
 
 
 @SpringBootTest
+@TestPropertySource("classpath:application-test.properties")
 class PokemonTypeServiceTest {
 
     @MockBean
@@ -21,6 +24,9 @@ class PokemonTypeServiceTest {
     @Autowired
     PokemonTypeService pokemonTypeService;
     JsonTestUtils jsonTestUtils = new JsonTestUtils();
+
+    @Value("${filepath.bulbasaur.json}")
+    private String bulbasaurFilePath;
 
     @Test
     void repoShouldReturnCorrectTypeWhenFindingByName() {
@@ -34,7 +40,7 @@ class PokemonTypeServiceTest {
     void getTypesListFromApiShouldReturnCorrectAmountOfTypes(){
         List<PokemonType> actualList;
             actualList = pokemonTypeService.getPokemonTypesListFromApi(
-                    jsonTestUtils.getJsonFromFile("src/test/resources/bulbasaur.json"));
+                    jsonTestUtils.getJsonFromFile(bulbasaurFilePath));
         Assertions.assertEquals(2, actualList.size());
     }
 

@@ -6,17 +6,23 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 import utils.JsonTestUtils;
 
 @SpringBootTest
+@TestPropertySource("classpath:application-test.properties")
 class PokemonMoveServiceTest {
     @MockBean
     PokemonMoveRepo pokemonMoveRepo;
     @Autowired
     PokemonMoveService pokemonMoveService;
     JsonTestUtils jsonTestUtils = new JsonTestUtils();
+
+    @Value("${filepath.pound.json}")
+    private String poundFilePath;
 
     @Test
     void repoShouldReturnCorrectMoveWhenFindingByName() {
@@ -33,7 +39,7 @@ class PokemonMoveServiceTest {
     @Test
     void createPokemonMoveFromJsonShouldCreateCorrectMove() {
         PokemonMove pokemonMove= pokemonMoveService.createMoveFromJson(
-                jsonTestUtils.getJsonFromFile("src/test/resources/move-pound.json"));
+                jsonTestUtils.getJsonFromFile(poundFilePath));
 
         Assertions.assertEquals("pound", pokemonMove.getName());
     }
