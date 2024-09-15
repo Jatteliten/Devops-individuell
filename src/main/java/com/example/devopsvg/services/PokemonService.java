@@ -124,16 +124,18 @@ public class PokemonService {
                 .build();
     }
 
-    public Map<PokemonType, Double> calculateDamageTakenMultipliers(Pokemon pokemon){
-        Map<PokemonType, Double> damageMultipliers = new HashMap<>();
-        if(pokemon.getTypes().size() == 1){
-            damageMultipliers = calculateDamageTakenMultipliersFromOneType(pokemon.getTypes().get(0));
-        }else{
-            damageMultipliers = calculateDamageTakenMultipliersFromTwoTypes(pokemon);
+    public Map<PokemonType, Double> calculateDamageTakenMultipliers(Pokemon pokemon) {
+        List<PokemonType> pokemonTypes = pokemon.getTypes();
+        Map<PokemonType, Double> combinedMultipliers = new HashMap<>();
+
+        for (PokemonType type : pokemonTypes) {
+            addDamageMultipliersForType(type, combinedMultipliers);
         }
-        return damageMultipliers.entrySet()
+
+        return combinedMultipliers.entrySet()
                 .stream()
-                .sorted(Map.Entry.<PokemonType, Double>comparingByValue(Comparator.reverseOrder()))
+                .filter(entry -> entry.getValue() != 1.0)
+                .sorted(Map.Entry.<PokemonType, Double>comparingByValue().reversed())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -142,42 +144,16 @@ public class PokemonService {
                 ));
     }
 
-    public Map<PokemonType, Double> calculateDamageTakenMultipliersFromOneType(PokemonType pokemonType){
-        Map<PokemonType, Double> damageMultipliers = new HashMap<>();
-        for(PokemonType type: pokemonType.getDoubleDamageFrom()){
-            damageMultipliers.put(type, 2.0);
-        }
-        for(PokemonType type: pokemonType.getHalfDamageFrom()){
-            damageMultipliers.put(type, 0.5);
-        }
-        for (PokemonType type: pokemonType.getNoDamageFrom()){
-            damageMultipliers.put(type, 0.0);
-        }
-        return damageMultipliers;
+    private void addDamageMultipliersForType(PokemonType pokemonType, Map<PokemonType, Double> multipliers) {
+        updateDamageMultiplier(multipliers, pokemonType.getDoubleDamageFrom(), 2.0);
+        updateDamageMultiplier(multipliers, pokemonType.getHalfDamageFrom(), 0.5);
+        updateDamageMultiplier(multipliers, pokemonType.getNoDamageFrom(), 0.0);
     }
 
-    public Map<PokemonType, Double> calculateDamageTakenMultipliersFromTwoTypes(Pokemon pokemon){
-        Map<PokemonType, Double> firstTypeMultipliers = calculateDamageTakenMultipliersFromOneType(
-                pokemon.getTypes().get(0));
-        Map<PokemonType, Double> secondTypeMultipliers = calculateDamageTakenMultipliersFromOneType(
-                pokemon.getTypes().get(1));
-
-        Map<PokemonType, Double> addedMultipliers = new HashMap<>();
-
-        for(Map.Entry<PokemonType, Double> type : firstTypeMultipliers.entrySet()){
-            if(secondTypeMultipliers.containsKey(type.getKey())){
-                addedMultipliers.put(type.getKey(), type.getValue() * secondTypeMultipliers.get(type.getKey()));
-            } else{
-                addedMultipliers.put(type.getKey(), type.getValue());
-            }
+    private void updateDamageMultiplier(Map<PokemonType, Double> multipliers, List<PokemonType> types, double value) {
+        for (PokemonType type : types) {
+            multipliers.merge(type, value, (oldValue, newValue) -> oldValue * newValue);
         }
-
-        for(Map.Entry<PokemonType, Double> type : secondTypeMultipliers.entrySet()){
-            if(!addedMultipliers.containsKey(type.getKey())){
-                addedMultipliers.put(type.getKey(), type.getValue());
-            }
-        }
-        return addedMultipliers;
     }
 
     public String removeLineBreaksAndFormFeedCharactersFromFlavorText(String text){
