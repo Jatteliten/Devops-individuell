@@ -5,6 +5,7 @@ import com.example.devopsvg.repos.PokemonMoveRepo;
 import com.example.devopsvg.repos.PokemonTypeRepo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,11 +16,12 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class PokemonMoveService {
-    private static final String POKE_API_URL = "https://pokeapi.co/api/v2/move/";
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final PokemonTypeRepo pokemonTypeRepo;
     private final PokemonMoveRepo pokemonMoveRepo;
+    @Value("${pokemon.moves.api.url}")
+    private String pokemonMovesApiUrl;
 
     public PokemonMoveService(RestTemplate restTemplate, ObjectMapper objectMapper,
                               PokemonTypeRepo pokemonTypeRepo, PokemonMoveRepo pokemonMoveRepo) {
@@ -69,7 +71,7 @@ public class PokemonMoveService {
     }
 
     public JsonNode getMoveDataFromApi(int pokemonMoveId) {
-        String url = POKE_API_URL + pokemonMoveId;
+        String url = pokemonMovesApiUrl + pokemonMoveId;
         String jsonResponse = restTemplate.getForObject(url, String.class);
 
         try {
