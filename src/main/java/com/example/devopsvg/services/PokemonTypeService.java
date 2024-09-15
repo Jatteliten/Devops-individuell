@@ -8,7 +8,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,15 +52,11 @@ public class PokemonTypeService {
 
         for(PokemonType type: types) {
             if (type.getHalfDamageFrom().isEmpty() && type.getDoubleDamageFrom().isEmpty()) {
-                try {
-                    JsonNode typeData = jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl + type.getName());
-                    addDamageModifier(typeData, "double_damage_from", type.getDoubleDamageFrom());
-                    addDamageModifier(typeData, "half_damage_from", type.getHalfDamageFrom());
-                    addDamageModifier(typeData, "no_damage_from", type.getNoDamageFrom());
-                    pokemonTypeRepo.save(type);
-                } catch (IOException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                JsonNode typeData = jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl + type.getName());
+                addDamageModifier(typeData, "double_damage_from", type.getDoubleDamageFrom());
+                addDamageModifier(typeData, "half_damage_from", type.getHalfDamageFrom());
+                addDamageModifier(typeData, "no_damage_from", type.getNoDamageFrom());
+                pokemonTypeRepo.save(type);
             }
         }
     }

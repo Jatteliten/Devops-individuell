@@ -11,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -78,21 +77,17 @@ public class PokemonService {
     }
 
     public String findFlavorTextInSpeciesEntry(String url){
-        try {
-            JsonNode entries = jsonExtractor.fetchJsonFromUrl(url)
-                    .path("flavor_text_entries");
+        JsonNode entries = jsonExtractor.fetchJsonFromUrl(url)
+                .path("flavor_text_entries");
 
-            for (JsonNode entry : entries) {
-                if (entry.path("language").path("name").asText().equals("en")) {
-                    return removeLineBreaksAndFormFeedCharactersFromFlavorText(
-                            entry.path("flavor_text").asText());
-                }
+        for (JsonNode entry : entries) {
+            if (entry.path("language").path("name").asText().equals("en")) {
+                return removeLineBreaksAndFormFeedCharactersFromFlavorText(
+                        entry.path("flavor_text").asText());
             }
-
-            return "No English flavor text found.";
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
         }
+
+        return "No English flavor text found.";
     }
 
     public JsonNode getPokemonDataFromApi(int pokemonId) {

@@ -30,9 +30,6 @@ public class FetchPokemonData implements CommandLineRunner {
     @Value("${pokemon.api.alternate_form_limiter}")
     private int alternateFormLimiter;
 
-    @Value("${pokemon.api.remove_response_limit}")
-    private String removeResponseLimit;
-
     public FetchPokemonData(PokemonTypeService pokemonTypeService, PokemonService pokemonService,
                             PokemonMoveService pokemonMoveService, UrlUtils urlUtils){
         this.pokemonTypeService = pokemonTypeService;
@@ -41,7 +38,7 @@ public class FetchPokemonData implements CommandLineRunner {
         this.urlUtils = urlUtils;
     }
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         fetchTypesToDatabase(jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
         fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(
                 urlUtils.removeResponseLimit(pokemonMovesApiUrl)).path("results"));

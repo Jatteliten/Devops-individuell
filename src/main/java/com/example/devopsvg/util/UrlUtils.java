@@ -1,7 +1,9 @@
 package com.example.devopsvg.util;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UrlUtils {
 
     @Value("${pokemon.api.remove_response_limit}")
