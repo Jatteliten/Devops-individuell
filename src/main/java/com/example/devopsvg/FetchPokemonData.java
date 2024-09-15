@@ -39,7 +39,7 @@ public class FetchPokemonData implements CommandLineRunner {
     }
     @Override
     public void run(String... args) {
-        fetchTypesToDatabase(jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
+        fetchTypesAndAddRelationshipsToDatabase(jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
         fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(
                 urlUtils.removeResponseLimit(pokemonMovesApiUrl)).path("results"));
         fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(
@@ -47,7 +47,7 @@ public class FetchPokemonData implements CommandLineRunner {
         System.out.println("*** Fetch complete ***");
     }
 
-    private void fetchTypesToDatabase(JsonNode resultsNode) {
+    private void fetchTypesAndAddRelationshipsToDatabase(JsonNode resultsNode) {
         for (JsonNode pokemonTypeNode : resultsNode) {
             pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
                     pokemonTypeNode.path("name").asText());
