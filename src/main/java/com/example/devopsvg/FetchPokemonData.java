@@ -53,6 +53,7 @@ public class FetchPokemonData implements CommandLineRunner {
                     pokemonTypeNode.path("name").asText());
         }
         System.out.println("*** All types added ***");
+
         pokemonTypeService.addTypeRelationships();
         System.out.println("*** Type relationships added ***");
     }
