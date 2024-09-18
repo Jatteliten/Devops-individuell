@@ -14,7 +14,7 @@
     <a href="/pokemon/list"><button type="button" class="btn btn-outline-danger">Back to list</button></a>
 
     <div class="pokemon-info" style="display: flex; align-items: flex-start;">
-        <img th:src="${pokemon.artworkLink}" alt="Sprite" style="max-width: 300px; max-height: 300px;">
+        <img th:src="${pokemon.artworkLink}" alt="Artwork" style="max-width: 300px; max-height: 300px;">
 
         <div style="margin-left: 20px;">
             <h1 th:text="${pokemon.name}">Pokémon</h1>
@@ -63,6 +63,16 @@
 
         </div>
     </div>
+    <a th:if="${previousPokemon != 'empty'}" th:href="'/pokemon/pokemon-info?pokemonName=' + ${previousPokemon.name}"
+       class="btn btn-outline-dark btn-sm" style="display: inline-flex; align-items: center;">
+        <h3 style="margin: 0; padding-left: 10px; display: inline-block;"><</h3>
+        <img th:src="${previousPokemon.spriteLink}" alt="Sprite" style="max-width: 300px; max-height: 300px; display: inline-block;">
+    </a>
+    <a th:if="${nextPokemon != 'empty'}" th:href="'/pokemon/pokemon-info?pokemonName=' + ${nextPokemon.name}"
+       class="btn btn-outline-dark btn-sm" style="display: inline-flex; align-items: center;">
+        <img th:src="${nextPokemon.spriteLink}" alt="Sprite" style="max-width: 300px; max-height: 300px; display: inline-block;">
+        <h3 style="margin: 0; padding-left: 10px; display: inline-block;">></h3>
+    </a>
 </div>
 
 

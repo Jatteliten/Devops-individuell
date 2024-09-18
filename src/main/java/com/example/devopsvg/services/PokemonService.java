@@ -1,6 +1,7 @@
 package com.example.devopsvg.services;
 
 import com.example.devopsvg.dto.pokemonViews.PokemonListDto;
+import com.example.devopsvg.dto.pokemonViews.PokemonNextOrPreviousDto;
 import com.example.devopsvg.model.Pokemon;
 import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonRepo;
@@ -118,6 +119,13 @@ public class PokemonService {
                 .build();
     }
 
+    public PokemonNextOrPreviousDto convertPokemonToPokemonNextOrPreviousDto(Pokemon pokemon){
+        return PokemonNextOrPreviousDto.builder()
+                .name(pokemon.getName())
+                .spriteLink(pokemon.getSpriteLink())
+                .build();
+    }
+
     public Map<PokemonType, Double> calculateDamageTakenMultipliers(Pokemon pokemon) {
         List<PokemonType> pokemonTypes = pokemon.getTypes();
         Map<PokemonType, Double> combinedMultipliers = new HashMap<>();
@@ -159,6 +167,20 @@ public class PokemonService {
             return input;
         }
         return Character.toUpperCase(input.charAt(0)) + input.substring(1);
+    }
+
+    public Pokemon findNextPokemonInPokeDex(Pokemon pokemon){
+        if(pokemon.getPokedexId() != pokemonRepo.findAll().size()) {
+            return pokemonRepo.findByPokedexId(pokemon.getPokedexId() + 1);
+        }
+        return null;
+    }
+
+    public Pokemon findPreviousPokemonInPokeDex(Pokemon pokemon){
+        if(pokemon.getPokedexId() != 1) {
+            return pokemonRepo.findByPokedexId(pokemon.getPokedexId() - 1);
+        }
+        return null;
     }
 
 }

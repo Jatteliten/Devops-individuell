@@ -1,5 +1,7 @@
 package com.example.devopsvg.controller;
 
+import com.example.devopsvg.dto.pokemonViews.PokemonNextOrPreviousDto;
+import com.example.devopsvg.model.Pokemon;
 import com.example.devopsvg.repos.PokemonRepo;
 import com.example.devopsvg.services.PokemonService;
 import com.example.devopsvg.services.PokemonTypeService;
@@ -46,11 +48,27 @@ public class PokemonController {
 
     @GetMapping("/pokemon-info")
     public String pokemonInformation(@RequestParam("pokemonName") String name, Model model){
-        model.addAttribute("pokemon", pokemonRepo.findByName(pokemonService.capitalizeFirstLetter(name)));
-        model.addAttribute("pokemonTypeMatchUps",
-                pokemonService.calculateDamageTakenMultipliers(pokemonRepo.findByName(
-                        pokemonService.capitalizeFirstLetter(name))));
+        Pokemon pokemon = pokemonRepo.findByName(pokemonService.capitalizeFirstLetter(name));
+
+        model.addAttribute("pokemon", pokemon);
+        model.addAttribute("pokemonTypeMatchUps", pokemonService.calculateDamageTakenMultipliers(pokemon));
+        findNextOrPreviousPokemonAndAddToModelIfItIsNotNull(
+                pokemonService.findPreviousPokemonInPokeDex(pokemon), model, "previousPokemon");
+        findNextOrPreviousPokemonAndAddToModelIfItIsNotNull(
+                pokemonService.findNextPokemonInPokeDex(pokemon), model, "nextPokemon");
+
         return "pokemon-info.html";
+    }
+
+    private void findNextOrPreviousPokemonAndAddToModelIfItIsNotNull(Pokemon pokemon, Model model,
+                                                                     String modelAttribute) {
+        if (pokemon != null) {
+            PokemonNextOrPreviousDto pokemonNextOrPrevious =
+                    pokemonService.convertPokemonToPokemonNextOrPreviousDto(pokemon);
+            model.addAttribute(modelAttribute, pokemonNextOrPrevious);
+        } else {
+            model.addAttribute(modelAttribute, "empty");
+        }
     }
 
 }

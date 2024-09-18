@@ -1,6 +1,7 @@
 package com.example.devopsvg.services;
 
 import com.example.devopsvg.dto.pokemonViews.PokemonListDto;
+import com.example.devopsvg.dto.pokemonViews.PokemonNextOrPreviousDto;
 import com.example.devopsvg.model.Pokemon;
 import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonRepo;
@@ -72,6 +73,53 @@ class PokemonServiceTest {
         Assertions.assertEquals(id, pokemonListDto.getPokedexId());
         Assertions.assertEquals(spriteLink, pokemonListDto.getSpriteLink());
         Assertions.assertEquals(type, pokemonListDto.getTypes().get(0).getName());
+    }
+
+    @Test
+    void convertPokemonToPokemonNextOrPreviousDtoShouldConvertCorrectly(){
+        Pokemon pokemon = Pokemon.builder()
+                .name("testName")
+                .spriteLink("testLink")
+                .build();
+
+        PokemonNextOrPreviousDto pokemonDto = pokemonService.convertPokemonToPokemonNextOrPreviousDto(pokemon);
+
+        Assertions.assertEquals(pokemon.getName(), pokemonDto.getName());
+        Assertions.assertEquals(pokemon.getSpriteLink(), pokemonDto.getSpriteLink());
+    }
+
+    @Test
+    void findNextPokemonInPokeDexShouldReturnNextPokemon(){
+        int firstPokemonId = 1;
+        int secondPokemonId = 2;
+        Mockito.when(pokemonRepo.findByPokedexId(firstPokemonId)).thenReturn(
+                Pokemon.builder()
+                        .pokedexId(firstPokemonId)
+                        .build());
+        Mockito.when(pokemonRepo.findByPokedexId(secondPokemonId)).thenReturn(
+                Pokemon.builder()
+                        .pokedexId(secondPokemonId)
+                        .build());
+
+        Assertions.assertEquals(pokemonRepo.findByPokedexId(secondPokemonId),
+                pokemonService.findNextPokemonInPokeDex(pokemonRepo.findByPokedexId(firstPokemonId)));
+    }
+
+    @Test
+    void findPreviousPokemonInPokeDexShouldReturnPreviousPokemon(){
+        int firstPokemonId = 1;
+        int secondPokemonId = 2;
+        Mockito.when(pokemonRepo.findByPokedexId(firstPokemonId)).thenReturn(
+                Pokemon.builder()
+                        .pokedexId(firstPokemonId)
+                        .build());
+        Mockito.when(pokemonRepo.findByPokedexId(secondPokemonId)).thenReturn(
+                Pokemon.builder()
+                        .pokedexId(secondPokemonId)
+                        .build());
+
+        Assertions.assertEquals(pokemonRepo.findByPokedexId(firstPokemonId),
+                pokemonService.findPreviousPokemonInPokeDex(pokemonRepo.findByPokedexId(secondPokemonId)));
     }
 
 }
