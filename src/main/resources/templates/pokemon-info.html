@@ -22,7 +22,7 @@
             <div class="pokemon-types" style="margin-top: 10px; display: flex;">
                 <div th:each="type : ${pokemon.types}">
                     <a th:text="${type.name}"
-                       th:class="'btn type-button type-' + ${type.name.toLowerCase()}"
+                       th:class="'btn type-button type-' + ${type.name}"
                        style="pointer-events: none; cursor: default; text-decoration: none; margin-right: 5px;">
                     </a>
                 </div>

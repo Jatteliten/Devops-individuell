@@ -23,9 +23,9 @@
 
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
             <a th:each="type : ${types}">
-                <a th:href="'/pokemon/list-by-type?type=' + ${type.toLowerCase()}"
+                <a th:href="'/pokemon/list-by-type?type=' + ${type}"
                    th:text="${type}"
-                   th:class="'btn type-button type-' + ${type.toLowerCase()}">
+                   th:class="'btn type-button type-' + ${type}">
                 </a>
             </a>
         </div>
@@ -56,9 +56,9 @@
             </td>
             <td>
                 <div th:each="type : ${pokemon.types}">
-                    <a th:href="'/pokemon/list-by-type?type=' + ${type.name.toLowerCase()}"
+                    <a th:href="'/pokemon/list-by-type?type=' + ${type.name}"
                        th:text="${type.name}"
-                       th:class="'btn type-button type-' + ${type.name.toLowerCase()}">
+                       th:class="'btn type-button type-' + ${type.name}">
                     </a>
                 </div>
             </td>
