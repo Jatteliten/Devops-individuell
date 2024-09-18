@@ -43,7 +43,9 @@ Pokémon
 ## Acknowledgments
 **Teachers at Nackademin**
 [Sigrun Olafsdottir](https://github.com/sigrunolafsdottir) - OOP, Database, Backend, etc.
+
 [Stefan Holmberg](https://github.com/aspcodenet) - Backend, IT security, DevOps, etc.
+
 [Mahmud Al Hakim](https://github.com/mahmudalhakim/) - Frontend, Design patterns.
 
 **Api used in the project**
