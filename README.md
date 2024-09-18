@@ -9,7 +9,10 @@ It allows you to populate a database with every Pokémon, typing and move from t
 This will be displayed in a list on the website, which allows you to click to a separate info page about each Pokémon.
 The list can be filtered by Pokémon name via the search bar or Pokémon type by clicking any Pokémon type button present on the page.
 
-Attributes that will be saved to your database:
+The information page of each Pokémon will give you information about type weaknesses/strengths, which attacks it can learn
+and some flavor text from the Pokédex entry.
+
+Objects and attributes that will be saved to your database:
 
 ```
 Type 
@@ -45,9 +48,9 @@ Pokémon
 
 [Sigrun Olafsdottir](https://github.com/sigrunolafsdottir) - OOP, Database, Backend, etc.
 
-[Stefan Holmberg](https://github.com/aspcodenet) - Backend, IT security, DevOps, etc.
-
 [Mahmud Al Hakim](https://github.com/mahmudalhakim/) - Frontend, Design patterns.
+
+[Stefan Holmberg](https://github.com/aspcodenet) - Backend, IT security, DevOps, etc.
 
 **Api used in the project**
 
