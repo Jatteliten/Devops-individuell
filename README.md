@@ -50,4 +50,5 @@ Pokémon
 [Mahmud Al Hakim](https://github.com/mahmudalhakim/) - Frontend, Design patterns.
 
 **Api used in the project**
+
 [PokéApi](https://pokeapi.co/)
