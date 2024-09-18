@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.LinkedHashMap;
 
@@ -181,6 +182,12 @@ public class PokemonService {
             return pokemonRepo.findByPokedexId(pokemon.getPokedexId() - 1);
         }
         return null;
+    }
+
+    public Pokemon getRandomPokemon(){
+        Random rand = new Random();
+
+        return pokemonRepo.findByPokedexId(rand.nextInt((int) (pokemonRepo.count() + 1)));
     }
 
 }

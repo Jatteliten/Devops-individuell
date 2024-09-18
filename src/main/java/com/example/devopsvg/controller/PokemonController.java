@@ -60,6 +60,11 @@ public class PokemonController {
         return "pokemon-info.html";
     }
 
+    @GetMapping("/pokemon-random")
+    public String randomPokemon(Model model){
+        return pokemonInformation(pokemonService.getRandomPokemon().getName(), model);
+    }
+
     private void findNextOrPreviousPokemonAndAddToModelIfItIsNotNull(Pokemon pokemon, Model model,
                                                                      String modelAttribute) {
         if (pokemon != null) {
