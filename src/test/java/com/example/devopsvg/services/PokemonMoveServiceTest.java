@@ -19,7 +19,7 @@ class PokemonMoveServiceTest {
     PokemonMoveRepo pokemonMoveRepo;
     @Autowired
     PokemonMoveService pokemonMoveService;
-    JsonTestUtils jsonTestUtils = new JsonTestUtils();
+    private final JsonTestUtils jsonTestUtils = new JsonTestUtils();
 
     @Value("${filepath.pound.json}")
     private String poundFilePath;

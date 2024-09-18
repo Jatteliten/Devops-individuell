@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class JsonTestUtils {
-    ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     public JsonNode getJsonFromFile(String fileName){
         try {
             return objectMapper.readTree(

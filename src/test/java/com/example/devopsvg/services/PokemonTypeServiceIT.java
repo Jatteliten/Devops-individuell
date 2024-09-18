@@ -24,7 +24,7 @@ class PokemonTypeServiceIT {
     PokemonTypeRepo pokemonTypeRepo;
     @Autowired
     PokemonTypeService pokemonTypeService;
-    JsonTestUtils jsonTestUtils = new JsonTestUtils();
+    private final JsonTestUtils jsonTestUtils = new JsonTestUtils();
 
     @Value("${filepath.types.json}")
     private String typesFilePath;

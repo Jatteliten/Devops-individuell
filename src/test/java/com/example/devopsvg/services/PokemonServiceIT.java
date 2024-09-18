@@ -37,7 +37,7 @@ class PokemonServiceIT {
     @Autowired
     PokemonMoveRepo pokemonMoveRepo;
     private final UrlUtils urlUtils = new UrlUtils();
-    JsonTestUtils jsonTestUtils = new JsonTestUtils();
+    private final JsonTestUtils jsonTestUtils = new JsonTestUtils();
     private final String TEST_POKEMON_NAME = "Bulbasaur";
     private final int TEST_POKEMON_ID = 1;
 

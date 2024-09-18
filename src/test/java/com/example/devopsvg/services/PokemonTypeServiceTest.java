@@ -23,7 +23,7 @@ class PokemonTypeServiceTest {
     PokemonTypeRepo pokemonTypeRepo;
     @Autowired
     PokemonTypeService pokemonTypeService;
-    JsonTestUtils jsonTestUtils = new JsonTestUtils();
+    private final JsonTestUtils jsonTestUtils = new JsonTestUtils();
 
     @Value("${filepath.bulbasaur.json}")
     private String bulbasaurFilePath;

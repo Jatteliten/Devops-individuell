@@ -22,7 +22,7 @@ class PokemonServiceTest {
     PokemonRepo pokemonRepo;
     @Autowired
     PokemonService pokemonService;
-    JsonTestUtils jsonTestUtils = new JsonTestUtils();
+    private final JsonTestUtils jsonTestUtils = new JsonTestUtils();
 
     @Test
     void repoShouldReturnCorrectPokemonWhenFindingByName() {
