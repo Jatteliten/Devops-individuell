@@ -9,10 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 @Service
 public class PokemonMoveService {
@@ -61,13 +60,14 @@ public class PokemonMoveService {
     }
 
     public List<PokemonMove> getMoveListFromApi(JsonNode pokemonData){
-        return StreamSupport.stream(pokemonData.path("moves").spliterator(), false)
-                .map(typeNode -> pokemonMoveRepo.findByName(typeNode
-                        .path("move")
-                        .path("name")
-                        .asText()))
-                .sorted(Comparator.comparing(move -> move.getType().getName()))
-                .toList();
+        List<PokemonMove> moves = new ArrayList<>();
+        for(JsonNode move: (pokemonData.path("moves"))){
+            moves.add(pokemonMoveRepo.findByName(move
+                    .path("move")
+                    .path("name")
+                    .asText()));
+        }
+        return moves;
     }
 
     public JsonNode getMoveDataFromApi(int pokemonMoveId) {

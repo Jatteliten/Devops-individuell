@@ -4,6 +4,7 @@ import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonTypeRepo;
 import com.example.devopsvg.utils.JsonExtractor;
 import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +46,8 @@ public class PokemonTypeService {
         return types;
     }
 
-    public void addTypeRelationshipsIfTheyDoNotAlreadyExist(){
+    @Transactional
+    public void addTypeRelationships(){
         List<PokemonType> types = pokemonTypeRepo.findAll();
 
         for(PokemonType type: types) {
