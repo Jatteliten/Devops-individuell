@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import utils.JsonTestUtils;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @TestPropertySource("classpath:application-test.properties")
 class PokemonMoveServiceTest {
     @MockBean

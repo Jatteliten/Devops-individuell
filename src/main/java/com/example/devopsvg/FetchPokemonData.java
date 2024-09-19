@@ -11,13 +11,12 @@ import com.example.devopsvg.utils.UrlUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
-@ComponentScan
+@Profile("!test")
+@Component
 public class FetchPokemonData implements CommandLineRunner {
-    private final ApplicationContext context;
     private final JsonExtractor jsonExtractor = new JsonExtractor();
     private final PokemonTypeService pokemonTypeService;
     private final PokemonService pokemonService;
@@ -39,9 +38,8 @@ public class FetchPokemonData implements CommandLineRunner {
     @Value("${pokemon.api.alternate_form_limiter}")
     private int alternateFormLimiter;
 
-    public FetchPokemonData(ApplicationContext context, PokemonTypeService pokemonTypeService, PokemonService pokemonService,
+    public FetchPokemonData(PokemonTypeService pokemonTypeService, PokemonService pokemonService,
                             PokemonMoveService pokemonMoveService, PokemonRepo pokemonRepo, PokemonMoveRepo pokemonMoveRepo, PokemonTypeRepo pokemonTypeRepo, UrlUtils urlUtils){
-        this.context = context;
         this.pokemonTypeService = pokemonTypeService;
         this.pokemonService = pokemonService;
         this.pokemonMoveService = pokemonMoveService;
@@ -50,39 +48,32 @@ public class FetchPokemonData implements CommandLineRunner {
         this.pokemonTypeRepo = pokemonTypeRepo;
         this.urlUtils = urlUtils;
     }
+
     @Override
     public void run(String... args) {
-        if(pokemonTypeRepo.count() == 0) {
+        if (pokemonTypeRepo.count() == 0 && pokemonMoveRepo.count() == 0 && pokemonRepo.count() == 0) {
             fetchTypesAndAddRelationshipsToDatabase(jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
+            fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(urlUtils.removeResponseLimit(pokemonMovesApiUrl)).path("results"));
+            fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(urlUtils.removeResponseLimit(pokemonListApiUrl)).path("results"));
+            System.out.println("*** Fetch complete ***");
+        } else {
+            System.out.println("*** Database already populated, running application normally ***");
         }
-        if(pokemonMoveRepo.count() == 0) {
-            fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(
-                    urlUtils.removeResponseLimit(pokemonMovesApiUrl)).path("results"));
-        }
-        if(pokemonRepo.count() == 0) {
-            fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(
-                    urlUtils.removeResponseLimit(pokemonListApiUrl)).path("results"));
-        }
-        System.out.println("*** Fetch complete ***");
-        SpringApplication.exit(context, () -> 0);
     }
 
     private void fetchTypesAndAddRelationshipsToDatabase(JsonNode resultsNode) {
         for (JsonNode pokemonTypeNode : resultsNode) {
-            pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
-                    pokemonTypeNode.path("name").asText());
+            pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(pokemonTypeNode.path("name").asText());
         }
         System.out.println("*** All types added ***");
-
         pokemonTypeService.addTypeRelationshipsIfTheyDoNotAlreadyExist();
         System.out.println("*** Type relationships added ***");
     }
 
     private void fetchPokemonToDatabase(JsonNode resultsNode) {
         for (JsonNode pokemonNode : resultsNode) {
-            if(urlUtils.extractIdFromUrl(pokemonNode.path("url").asText()) < alternateFormLimiter) {
-                pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(
-                        urlUtils.extractIdFromUrl(pokemonNode.path("url").asText()));
+            if (urlUtils.extractIdFromUrl(pokemonNode.path("url").asText()) < alternateFormLimiter) {
+                pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(urlUtils.extractIdFromUrl(pokemonNode.path("url").asText()));
             }
         }
         System.out.println("*** All Pokémon added ***");
@@ -90,10 +81,8 @@ public class FetchPokemonData implements CommandLineRunner {
 
     private void fetchMovesToDatabase(JsonNode resultsNode) {
         for (JsonNode pokemonMoveNode : resultsNode) {
-            pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(
-                    urlUtils.extractIdFromUrl(pokemonMoveNode.path("url").asText()));
+            pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(urlUtils.extractIdFromUrl(pokemonMoveNode.path("url").asText()));
         }
         System.out.println("*** All moves added ***");
     }
-
 }
