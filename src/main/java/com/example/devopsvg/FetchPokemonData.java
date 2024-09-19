@@ -1,5 +1,8 @@
 package com.example.devopsvg;
 
+import com.example.devopsvg.repos.PokemonMoveRepo;
+import com.example.devopsvg.repos.PokemonRepo;
+import com.example.devopsvg.repos.PokemonTypeRepo;
 import com.example.devopsvg.services.PokemonMoveService;
 import com.example.devopsvg.services.PokemonService;
 import com.example.devopsvg.services.PokemonTypeService;
@@ -8,14 +11,20 @@ import com.example.devopsvg.utils.UrlUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan
 public class FetchPokemonData implements CommandLineRunner {
+    private final ApplicationContext context;
     private final JsonExtractor jsonExtractor = new JsonExtractor();
     private final PokemonTypeService pokemonTypeService;
     private final PokemonService pokemonService;
     private final PokemonMoveService pokemonMoveService;
+    private final PokemonRepo pokemonRepo;
+    private final PokemonMoveRepo pokemonMoveRepo;
+    private final PokemonTypeRepo pokemonTypeRepo;
     private final UrlUtils urlUtils;
 
     @Value("${pokemon.types.api.url}")
@@ -30,21 +39,32 @@ public class FetchPokemonData implements CommandLineRunner {
     @Value("${pokemon.api.alternate_form_limiter}")
     private int alternateFormLimiter;
 
-    public FetchPokemonData(PokemonTypeService pokemonTypeService, PokemonService pokemonService,
-                            PokemonMoveService pokemonMoveService, UrlUtils urlUtils){
+    public FetchPokemonData(ApplicationContext context, PokemonTypeService pokemonTypeService, PokemonService pokemonService,
+                            PokemonMoveService pokemonMoveService, PokemonRepo pokemonRepo, PokemonMoveRepo pokemonMoveRepo, PokemonTypeRepo pokemonTypeRepo, UrlUtils urlUtils){
+        this.context = context;
         this.pokemonTypeService = pokemonTypeService;
         this.pokemonService = pokemonService;
         this.pokemonMoveService = pokemonMoveService;
+        this.pokemonRepo = pokemonRepo;
+        this.pokemonMoveRepo = pokemonMoveRepo;
+        this.pokemonTypeRepo = pokemonTypeRepo;
         this.urlUtils = urlUtils;
     }
     @Override
     public void run(String... args) {
-        fetchTypesAndAddRelationshipsToDatabase(jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
-        fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(
-                urlUtils.removeResponseLimit(pokemonMovesApiUrl)).path("results"));
-        fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(
-                urlUtils.removeResponseLimit(pokemonListApiUrl)).path("results"));
+        if(pokemonTypeRepo.count() == 0) {
+            fetchTypesAndAddRelationshipsToDatabase(jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
+        }
+        if(pokemonMoveRepo.count() == 0) {
+            fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(
+                    urlUtils.removeResponseLimit(pokemonMovesApiUrl)).path("results"));
+        }
+        if(pokemonRepo.count() == 0) {
+            fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(
+                    urlUtils.removeResponseLimit(pokemonListApiUrl)).path("results"));
+        }
         System.out.println("*** Fetch complete ***");
+        SpringApplication.exit(context, () -> 0);
     }
 
     private void fetchTypesAndAddRelationshipsToDatabase(JsonNode resultsNode) {

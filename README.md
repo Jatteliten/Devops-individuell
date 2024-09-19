@@ -35,10 +35,9 @@ Pokémon
 1. Set up database access
     -  Set up your env-file to connect to a database of your choice.
 2. Fetch data
-    - Run the application with the argument "fetch-data" to fetch all the necessary data from PokéApi and build the database.
-        * The program will tell you when it is done populating the database in the console.
+    - If your database is not populated, the program will do so automatically. This will take a while.
 3. Run website
-    - Run the program without arguments to use the website.
+    - Simply run the program with a populated database to use the website.
 
 ## Authors
 [Daniel Isaksson](https://github.com/Jatteliten/)
