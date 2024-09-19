@@ -61,7 +61,7 @@ class PokemonTypeServiceIT {
             pokemonTypeRepo.save(type);
         });
 
-        pokemonTypeService.addTypeRelationships();
+        pokemonTypeService.addTypeRelationshipsIfTheyDoNotAlreadyExist();
         List<PokemonType> weaknesses = pokemonTypeRepo.findByName(typeName).getDoubleDamageFrom();
         List<PokemonType> strengths = pokemonTypeRepo.findByName(typeName).getHalfDamageFrom();
 

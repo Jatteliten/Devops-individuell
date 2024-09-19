@@ -45,7 +45,7 @@ public class PokemonTypeService {
         return types;
     }
 
-    public void addTypeRelationships(){
+    public void addTypeRelationshipsIfTheyDoNotAlreadyExist(){
         List<PokemonType> types = pokemonTypeRepo.findAll();
 
         for(PokemonType type: types) {

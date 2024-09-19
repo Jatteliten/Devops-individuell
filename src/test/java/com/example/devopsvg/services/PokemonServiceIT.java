@@ -142,7 +142,7 @@ class PokemonServiceIT {
             pokemonTypeRepo.save(type);
         });
 
-        pokemonTypeService.addTypeRelationships();
+        pokemonTypeService.addTypeRelationshipsIfTheyDoNotAlreadyExist();
         pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(TEST_POKEMON_ID);
 
         Pokemon pokemon = pokemonRepo.findByName(TEST_POKEMON_NAME);

@@ -54,7 +54,7 @@ public class FetchPokemonData implements CommandLineRunner {
         }
         System.out.println("*** All types added ***");
 
-        pokemonTypeService.addTypeRelationships();
+        pokemonTypeService.addTypeRelationshipsIfTheyDoNotAlreadyExist();
         System.out.println("*** Type relationships added ***");
     }
 
