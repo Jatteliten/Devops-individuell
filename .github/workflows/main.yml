@@ -43,10 +43,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build . -t jatteliten/pokemon-list:latest \
-                          -t jatteliten/pokemon-list:1.${{ env.build-number }}.1
+          docker build . -t jatteliten/pokemon-list:latest
 
       - name: Push Docker image
         run: |
           docker push jatteliten/pokemon-list:latest
-          docker push jatteliten/pokemon-list:1.${{ env.build-number }}.1
