@@ -37,7 +37,7 @@ class PokemonMoveServiceTest {
 
     @Test
     void createPokemonMoveFromJsonShouldCreateCorrectMove() {
-        PokemonMove pokemonMove= pokemonMoveService.createMoveFromJson(
+        PokemonMove pokemonMove = pokemonMoveService.createMoveFromJson(
                 jsonTestUtils.getJsonFromFile(poundFilePath));
 
         Assertions.assertEquals("pound", pokemonMove.getName());

@@ -77,7 +77,7 @@ class PokemonServiceIT {
     void savePokemonToDatabaseShouldSavePokemon() {
         pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(1);
 
-        Assertions.assertEquals(1, pokemonRepo.findAll().size());
+        Assertions.assertEquals(1, pokemonService.getAllPokemon().size());
     }
 
     @Test

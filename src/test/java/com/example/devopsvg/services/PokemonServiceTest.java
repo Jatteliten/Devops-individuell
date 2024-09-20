@@ -158,7 +158,7 @@ class PokemonServiceTest {
                         .build());
 
         Assertions.assertEquals(pokemonService.getPokemonByPokedexId(secondPokemonId),
-                pokemonService.findNextPokemonInPokeDex(pokemonRepo.findByPokedexId(firstPokemonId)));
+                pokemonService.findNextPokemonInPokeDex(pokemonService.getPokemonByPokedexId(firstPokemonId)));
     }
 
     @Test
@@ -175,7 +175,7 @@ class PokemonServiceTest {
                         .build());
 
         Assertions.assertEquals(pokemonService.getPokemonByPokedexId(firstPokemonId),
-                pokemonService.findPreviousPokemonInPokeDex(pokemonRepo.findByPokedexId(secondPokemonId)));
+                pokemonService.findPreviousPokemonInPokeDex(pokemonService.getPokemonByPokedexId(secondPokemonId)));
     }
 
 }
