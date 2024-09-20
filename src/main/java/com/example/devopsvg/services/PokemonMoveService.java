@@ -21,7 +21,6 @@ public class PokemonMoveService {
     private final PokemonMoveRepo pokemonMoveRepo;
     @Value("${pokemon.moves.api.url}")
     private String pokemonMovesApiUrl;
-    hej
 
     public PokemonMoveService(RestTemplate restTemplate, ObjectMapper objectMapper,
                               PokemonTypeRepo pokemonTypeRepo, PokemonMoveRepo pokemonMoveRepo) {
