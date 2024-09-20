@@ -27,16 +27,70 @@ class PokemonServiceTest {
     private final JsonTestUtils jsonTestUtils = new JsonTestUtils();
 
     @Test
-    void repoShouldReturnCorrectPokemonWhenFindingByName() {
-        String testName = "bulbasaur";
-        int testId = 1;
-        Mockito.when(pokemonRepo.findByName(testName)).thenReturn(
-                Pokemon.builder()
-                        .name(testName)
-                        .pokedexId(testId)
-                        .build());
+    void getAllPokemonShouldGetAllPokemon() {
+        Pokemon pokemonOne = Pokemon.builder().name("testOne").build();
+        Pokemon pokemonTwo = Pokemon.builder().name("testTwo").build();
+        List<Pokemon> pokemonList = List.of(pokemonOne, pokemonTwo);
+        Mockito.when(pokemonRepo.findAll()).thenReturn(pokemonList);
 
-        Assertions.assertEquals(testId, pokemonRepo.findByName(testName).getPokedexId());
+        Assertions.assertEquals(2, pokemonService.getAllPokemon().size());
+        Assertions.assertTrue(pokemonService.getAllPokemon().contains(pokemonOne));
+        Assertions.assertTrue(pokemonService.getAllPokemon().contains(pokemonTwo));
+    }
+
+    @Test
+    void getPokemonByNameShouldReturnCorrectPokemon() {
+        String name = "test";
+        Pokemon pokemonOne = Pokemon.builder().name(name).build();
+
+        Mockito.when(pokemonRepo.findByName(name)).thenReturn(pokemonOne);
+
+        Assertions.assertEquals(pokemonOne, pokemonService.getPokemonByName(name));
+    }
+
+    @Test
+    void getAllPokemonWithGivenTypeShouldReturnAllPokemonWithGivenType() {
+        String name = "test";
+        Pokemon pokemonOne = Pokemon.builder().name("testOne").build();
+        Pokemon pokemonTwo = Pokemon.builder().name("testTwo").build();
+
+        Mockito.when(pokemonRepo.findAllByTypes_Name(name)).thenReturn(List.of(pokemonOne, pokemonTwo));
+
+        Assertions.assertEquals(2, pokemonService.getAllPokemonWithGivenType(name).size());
+        Assertions.assertTrue(pokemonService.getAllPokemonWithGivenType(name).contains(pokemonOne));
+        Assertions.assertTrue(pokemonService.getAllPokemonWithGivenType(name).contains(pokemonTwo));
+    }
+
+    @Test
+    void getPokemonByPokedexIdShouldReturnCorrectPokemon() {
+        int pokedexId = 1;
+        Pokemon pokemon = Pokemon.builder().pokedexId(pokedexId).build();
+
+        Mockito.when(pokemonRepo.findByPokedexId(pokedexId)).thenReturn(pokemon);
+
+        Assertions.assertEquals(pokemon, pokemonService.getPokemonByPokedexId(pokedexId));
+    }
+
+    @Test
+    void getAllPokemonWithNameThatContainsStringShouldReturnCorrectPokemon() {
+        String findString = "te";
+        Pokemon pokemonOne = Pokemon.builder().name("testOne").build();
+        Pokemon pokemonTwo = Pokemon.builder().name("testTwo").build();
+
+        Mockito.when(pokemonRepo.findAllByNameIsContainingIgnoreCase(findString))
+                .thenReturn(List.of(pokemonOne, pokemonTwo));
+
+        Assertions.assertEquals(2, pokemonService.getAllPokemonWithNameThatContainsString(findString).size());
+        Assertions.assertTrue(pokemonService.getAllPokemonWithNameThatContainsString(findString).contains(pokemonOne));
+        Assertions.assertTrue(pokemonService.getAllPokemonWithNameThatContainsString(findString).contains(pokemonTwo));
+    }
+
+    @Test
+    void countNumberOfPokemonInDatabaseShouldCountCorrectAmountOfPokemon() {
+        Long test = 3L;
+        Mockito.when(pokemonRepo.count()).thenReturn(test);
+
+        Assertions.assertEquals(test, pokemonService.countNumberOfPokemonInDatabase());
     }
 
     @Test
@@ -103,7 +157,7 @@ class PokemonServiceTest {
                         .pokedexId(secondPokemonId)
                         .build());
 
-        Assertions.assertEquals(pokemonRepo.findByPokedexId(secondPokemonId),
+        Assertions.assertEquals(pokemonService.getPokemonByPokedexId(secondPokemonId),
                 pokemonService.findNextPokemonInPokeDex(pokemonRepo.findByPokedexId(firstPokemonId)));
     }
 
@@ -120,7 +174,7 @@ class PokemonServiceTest {
                         .pokedexId(secondPokemonId)
                         .build());
 
-        Assertions.assertEquals(pokemonRepo.findByPokedexId(firstPokemonId),
+        Assertions.assertEquals(pokemonService.getPokemonByPokedexId(firstPokemonId),
                 pokemonService.findPreviousPokemonInPokeDex(pokemonRepo.findByPokedexId(secondPokemonId)));
     }
 

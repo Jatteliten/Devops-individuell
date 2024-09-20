@@ -1,8 +1,5 @@
 package com.example.devopsvg;
 
-import com.example.devopsvg.repos.PokemonMoveRepo;
-import com.example.devopsvg.repos.PokemonRepo;
-import com.example.devopsvg.repos.PokemonTypeRepo;
 import com.example.devopsvg.services.PokemonMoveService;
 import com.example.devopsvg.services.PokemonService;
 import com.example.devopsvg.services.PokemonTypeService;
@@ -21,9 +18,6 @@ public class FetchPokemonData implements CommandLineRunner {
     private final PokemonTypeService pokemonTypeService;
     private final PokemonService pokemonService;
     private final PokemonMoveService pokemonMoveService;
-    private final PokemonRepo pokemonRepo;
-    private final PokemonMoveRepo pokemonMoveRepo;
-    private final PokemonTypeRepo pokemonTypeRepo;
     private final UrlUtils urlUtils;
 
     @Value("${pokemon.types.api.url}")
@@ -39,19 +33,18 @@ public class FetchPokemonData implements CommandLineRunner {
     private int alternateFormLimiter;
 
     public FetchPokemonData(PokemonTypeService pokemonTypeService, PokemonService pokemonService,
-                            PokemonMoveService pokemonMoveService, PokemonRepo pokemonRepo, PokemonMoveRepo pokemonMoveRepo, PokemonTypeRepo pokemonTypeRepo, UrlUtils urlUtils){
+                            PokemonMoveService pokemonMoveService, UrlUtils urlUtils){
         this.pokemonTypeService = pokemonTypeService;
         this.pokemonService = pokemonService;
         this.pokemonMoveService = pokemonMoveService;
-        this.pokemonRepo = pokemonRepo;
-        this.pokemonMoveRepo = pokemonMoveRepo;
-        this.pokemonTypeRepo = pokemonTypeRepo;
         this.urlUtils = urlUtils;
     }
 
     @Override
     public void run(String... args) {
-        if (pokemonTypeRepo.count() == 0 && pokemonMoveRepo.count() == 0 && pokemonRepo.count() == 0) {
+        if (pokemonTypeService.countNumberOfTypesInDatabase() == 0 &&
+                pokemonTypeService.countNumberOfTypesInDatabase() == 0 &&
+                pokemonService.countNumberOfPokemonInDatabase() == 0) {
             fetchTypesAndAddRelationshipsToDatabase(jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
             fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(urlUtils.removeResponseLimit(pokemonMovesApiUrl)).path("results"));
             fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(urlUtils.removeResponseLimit(pokemonListApiUrl)).path("results"));

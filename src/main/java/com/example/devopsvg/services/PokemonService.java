@@ -41,10 +41,34 @@ public class PokemonService {
         this.pokemonMoveService = pokemonMoveService;
     }
 
+    public List<Pokemon> getAllPokemon(){
+        return pokemonRepo.findAll();
+    }
+
+    public Pokemon getPokemonByName(String name){
+        return pokemonRepo.findByName(name);
+    }
+
+    public List<Pokemon> getAllPokemonWithGivenType(String typeName){
+        return pokemonRepo.findAllByTypes_Name(typeName);
+    }
+
+    public Pokemon getPokemonByPokedexId(int id){
+        return pokemonRepo.findByPokedexId(id);
+    }
+
+    public List<Pokemon> getAllPokemonWithNameThatContainsString(String input){
+        return pokemonRepo.findAllByNameIsContainingIgnoreCase(input);
+    }
+
+    public Long countNumberOfPokemonInDatabase(){
+        return pokemonRepo.count();
+    }
+
     public void savePokemonToDatabaseIfItDoesNotAlreadyExist(int pokemonId){
         JsonNode pokemonData = getPokemonDataFromApi(pokemonId);
         Optional<Pokemon> tempPokemon = Optional.ofNullable(
-                pokemonRepo.findByName(pokemonData.path("name").asText()));
+                getPokemonByName(pokemonData.path("name").asText()));
         if(tempPokemon.isEmpty()){
             savePokemonToDatabase(pokemonData);
         }
@@ -104,11 +128,11 @@ public class PokemonService {
     }
 
     public List<PokemonListDto> getAllPokemonForList(){
-        return pokemonRepo.findAll().stream().map(this::convertPokemonToPokemonListDto).toList();
+        return getAllPokemon().stream().map(this::convertPokemonToPokemonListDto).toList();
     }
 
     public List<PokemonListDto> getAllPokemonByTypeForList(String type){
-        return pokemonRepo.findAllByTypes_Name(type).stream().map(this::convertPokemonToPokemonListDto).toList();
+        return getAllPokemonWithGivenType(type).stream().map(this::convertPokemonToPokemonListDto).toList();
     }
 
     public PokemonListDto convertPokemonToPokemonListDto(Pokemon pokemon){
@@ -171,15 +195,15 @@ public class PokemonService {
     }
 
     public Pokemon findNextPokemonInPokeDex(Pokemon pokemon){
-        if(pokemon.getPokedexId() != pokemonRepo.findAll().size()) {
-            return pokemonRepo.findByPokedexId(pokemon.getPokedexId() + 1);
+        if(pokemon.getPokedexId() != getAllPokemon().size()) {
+            return getPokemonByPokedexId(pokemon.getPokedexId() + 1);
         }
         return null;
     }
 
     public Pokemon findPreviousPokemonInPokeDex(Pokemon pokemon){
         if(pokemon.getPokedexId() != 1) {
-            return pokemonRepo.findByPokedexId(pokemon.getPokedexId() - 1);
+            return getPokemonByPokedexId(pokemon.getPokedexId() - 1);
         }
         return null;
     }
@@ -187,7 +211,7 @@ public class PokemonService {
     public Pokemon getRandomPokemon(){
         Random rand = new Random();
 
-        return pokemonRepo.findByPokedexId(rand.nextInt((int) (pokemonRepo.count() + 1)));
+        return getPokemonByPokedexId(rand.nextInt((int) (countNumberOfPokemonInDatabase() + 1)));
     }
 
 }

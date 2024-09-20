@@ -2,7 +2,6 @@ package com.example.devopsvg.controller;
 
 import com.example.devopsvg.dto.pokemonViews.PokemonNextOrPreviousDto;
 import com.example.devopsvg.model.Pokemon;
-import com.example.devopsvg.repos.PokemonRepo;
 import com.example.devopsvg.services.PokemonService;
 import com.example.devopsvg.services.PokemonTypeService;
 import org.springframework.stereotype.Controller;
@@ -14,13 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/pokemon")
 public class PokemonController {
-    private final PokemonRepo pokemonRepo;
     private final PokemonTypeService pokemonTypeService;
     private final PokemonService pokemonService;
 
-    public PokemonController(PokemonRepo pokemonRepo, PokemonTypeService pokemonTypeService,
+    public PokemonController(PokemonTypeService pokemonTypeService,
                              PokemonService pokemonService) {
-        this.pokemonRepo = pokemonRepo;
         this.pokemonTypeService = pokemonTypeService;
         this.pokemonService = pokemonService;
     }
@@ -41,14 +38,14 @@ public class PokemonController {
 
     @GetMapping("/list-by-search")
     public String pokemonListBySearch(@RequestParam("searchWord") String input, Model model){
-        model.addAttribute("pokemonlist", pokemonRepo.findAllByNameIsContainingIgnoreCase(input));
+        model.addAttribute("pokemonlist", pokemonService.getAllPokemonWithNameThatContainsString(input));
         model.addAttribute("types", pokemonTypeService.getAllTypeNamesList());
         return "pokemon-list.html";
     }
 
     @GetMapping("/pokemon-info")
     public String pokemonInformation(@RequestParam("pokemonName") String name, Model model){
-        Pokemon pokemon = pokemonRepo.findByName(pokemonService.capitalizeFirstLetter(name));
+        Pokemon pokemon = pokemonService.getPokemonByName(pokemonService.capitalizeFirstLetter(name));
 
         model.addAttribute("pokemon", pokemon);
         model.addAttribute("pokemonTypeMatchUps", pokemonService.calculateDamageTakenMultipliers(pokemon));

@@ -25,9 +25,21 @@ public class PokemonTypeService {
         this.pokemonTypeRepo = pokemonTypeRepo;
     }
 
+    public List<PokemonType> getAllPokemonTypes(){
+        return pokemonTypeRepo.findAll();
+    }
+
+    public PokemonType getPokemonTypeByName(String name){
+        return pokemonTypeRepo.findByName(name);
+    }
+
+    public Long countNumberOfTypesInDatabase(){
+        return pokemonTypeRepo.count();
+    }
+
     public void saveTypeToDatabaseIfItDoesNotAlreadyExist(String name){
         Optional<PokemonType> tempPokemonType = Optional.ofNullable(
-                pokemonTypeRepo.findByName(name));
+                getPokemonTypeByName(name));
 
         if(tempPokemonType.isEmpty()){
             pokemonTypeRepo.save(PokemonType.builder()
@@ -39,7 +51,7 @@ public class PokemonTypeService {
     public List<PokemonType> getPokemonTypesListFromApi(JsonNode pokemonData){
         List<PokemonType> types = new ArrayList<>();
         for (JsonNode typeNode : pokemonData.path("types")) {
-            types.add(pokemonTypeRepo.findByName(
+            types.add(getPokemonTypeByName(
                     typeNode.path("type").path("name").asText()));
         }
 
@@ -48,7 +60,7 @@ public class PokemonTypeService {
 
     @Transactional
     public void addTypeRelationshipsIfTheyDoNotAlreadyExist(){
-        List<PokemonType> types = pokemonTypeRepo.findAll();
+        List<PokemonType> types = getAllPokemonTypes();
 
         for(PokemonType type: types) {
             if (type.getHalfDamageFrom().isEmpty() && type.getDoubleDamageFrom().isEmpty()) {
@@ -66,12 +78,12 @@ public class PokemonTypeService {
                 .path("damage_relations")
                 .path(damageMultiplier)
                 .forEach(multiplierType ->
-                    typeList.add(pokemonTypeRepo.findByName(multiplierType
+                    typeList.add(getPokemonTypeByName(multiplierType
                             .path("name")
                             .asText())));
     }
 
     public List<String> getAllTypeNamesList(){
-        return pokemonTypeRepo.findAll().stream().map(PokemonType::getName).toList();
+        return getAllPokemonTypes().stream().map(PokemonType::getName).toList();
     }
 }

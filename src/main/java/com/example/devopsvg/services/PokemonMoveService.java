@@ -2,7 +2,6 @@ package com.example.devopsvg.services;
 
 import com.example.devopsvg.model.PokemonMove;
 import com.example.devopsvg.repos.PokemonMoveRepo;
-import com.example.devopsvg.repos.PokemonTypeRepo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,23 +16,28 @@ import java.util.Optional;
 public class PokemonMoveService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-    private final PokemonTypeRepo pokemonTypeRepo;
+    private final PokemonTypeService pokemonTypeService;
     private final PokemonMoveRepo pokemonMoveRepo;
+
     @Value("${pokemon.moves.api.url}")
     private String pokemonMovesApiUrl;
 
     public PokemonMoveService(RestTemplate restTemplate, ObjectMapper objectMapper,
-                              PokemonTypeRepo pokemonTypeRepo, PokemonMoveRepo pokemonMoveRepo) {
+                              PokemonTypeService pokemonTypeService, PokemonMoveRepo pokemonMoveRepo) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
-        this.pokemonTypeRepo = pokemonTypeRepo;
+        this.pokemonTypeService = pokemonTypeService;
         this.pokemonMoveRepo = pokemonMoveRepo;
+    }
+
+    PokemonMove getPokemonMoveByName(String name){
+        return pokemonMoveRepo.findByName(name);
     }
 
     public void saveMoveToDatabaseIfItDoesNotAlreadyExist(int pokemonMoveId){
         JsonNode pokemonData = getMoveDataFromApi(pokemonMoveId);
         Optional<PokemonMove> tempPokemonMove = Optional.ofNullable(
-                pokemonMoveRepo.findByName(pokemonData.path("name").asText()));
+                getPokemonMoveByName(pokemonData.path("name").asText()));
         if(tempPokemonMove.isEmpty()){
             saveMoveToDatabase(pokemonData);
         }
@@ -53,7 +57,7 @@ public class PokemonMoveService {
                 .damageClass(pokemonMoveData.path("damage_class")
                         .path("name")
                         .asText())
-                .type(pokemonTypeRepo.findByName(pokemonMoveData.path("type")
+                .type(pokemonTypeService.getPokemonTypeByName(pokemonMoveData.path("type")
                         .path("name")
                         .asText()))
                 .build();
@@ -62,7 +66,7 @@ public class PokemonMoveService {
     public List<PokemonMove> getMoveListFromApi(JsonNode pokemonData){
         List<PokemonMove> moves = new ArrayList<>();
         for(JsonNode move: (pokemonData.path("moves"))){
-            moves.add(pokemonMoveRepo.findByName(move
+            moves.add(getPokemonMoveByName(move
                     .path("move")
                     .path("name")
                     .asText()));

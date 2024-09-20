@@ -85,8 +85,8 @@ class PokemonServiceIT {
     void savePokemonToDataBaseShouldSaveCorrectPokemon(){
         pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(TEST_POKEMON_ID);
 
-        Assertions.assertEquals(1, pokemonRepo.findByName(TEST_POKEMON_NAME).getPokedexId());
-        Assertions.assertEquals(TEST_POKEMON_NAME, pokemonRepo.findByName(TEST_POKEMON_NAME).getName());
+        Assertions.assertEquals(1, pokemonService.getPokemonByName(TEST_POKEMON_NAME).getPokedexId());
+        Assertions.assertEquals(TEST_POKEMON_NAME, pokemonService.getPokemonByName(TEST_POKEMON_NAME).getName());
     }
 
     @Test
@@ -96,9 +96,9 @@ class PokemonServiceIT {
         pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist("poison");
         pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(TEST_POKEMON_ID);
 
-        Assertions.assertEquals(2, pokemonRepo.findByName(TEST_POKEMON_NAME).getTypes().size());
-        Assertions.assertEquals("grass", pokemonRepo.findByName(TEST_POKEMON_NAME).getTypes().get(0).getName());
-        Assertions.assertEquals("poison", pokemonRepo.findByName(TEST_POKEMON_NAME).getTypes().get(1).getName());
+        Assertions.assertEquals(2, pokemonService.getPokemonByName(TEST_POKEMON_NAME).getTypes().size());
+        Assertions.assertEquals("grass", pokemonService.getPokemonByName(TEST_POKEMON_NAME).getTypes().get(0).getName());
+        Assertions.assertEquals("poison", pokemonService.getPokemonByName(TEST_POKEMON_NAME).getTypes().get(1).getName());
     }
 
     @Test
@@ -109,8 +109,8 @@ class PokemonServiceIT {
         pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(tackleMoveId);
         pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(TEST_POKEMON_ID);
 
-        Assertions.assertTrue(pokemonRepo.findByName(TEST_POKEMON_NAME).getMoves()
-                .contains(pokemonMoveRepo.findByName(tackleName)));
+        Assertions.assertTrue(pokemonService.getPokemonByName(TEST_POKEMON_NAME).getMoves()
+                .contains(pokemonMoveService.getPokemonMoveByName(tackleName)));
     }
 
     @Test
@@ -120,9 +120,8 @@ class PokemonServiceIT {
 
         String expectedFlavorText = "A strange seed was planted on its back at birth. " +
                 "The plant sprouts and grows with this POKéMON.";
-        String actualFlavorText = pokemonRepo.findByName(TEST_POKEMON_NAME).getFlavorText();
 
-        Assertions.assertEquals(expectedFlavorText, actualFlavorText);
+        Assertions.assertEquals(expectedFlavorText, pokemonService.getPokemonByName(TEST_POKEMON_NAME).getFlavorText());
     }
 
     @Test
@@ -135,7 +134,7 @@ class PokemonServiceIT {
                     .forEach(typeData ->
                             pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
                                     typeData.path("name").asText()));
-        pokemonTypeRepo.findAll().forEach(type ->{
+        pokemonTypeService.getAllPokemonTypes().forEach(type ->{
             type.setHalfDamageFrom(new ArrayList<>());
             type.setDoubleDamageFrom(new ArrayList<>());
             type.setNoDamageFrom(new ArrayList<>());
@@ -145,11 +144,11 @@ class PokemonServiceIT {
         pokemonTypeService.addTypeRelationshipsIfTheyDoNotAlreadyExist();
         pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(TEST_POKEMON_ID);
 
-        Pokemon pokemon = pokemonRepo.findByName(TEST_POKEMON_NAME);
+        Pokemon pokemon = pokemonService.getPokemonByName(TEST_POKEMON_NAME);
         Map<PokemonType, Double> damageModifiers = pokemonService.calculateDamageTakenMultipliers(pokemon);
 
-        Assertions.assertEquals(damageFromFire, damageModifiers.get(pokemonTypeRepo.findByName("fire")));
-        Assertions.assertEquals(damageFromGrass, damageModifiers.get(pokemonTypeRepo.findByName("grass")));
+        Assertions.assertEquals(damageFromFire, damageModifiers.get(pokemonTypeService.getPokemonTypeByName("fire")));
+        Assertions.assertEquals(damageFromGrass, damageModifiers.get(pokemonTypeService.getPokemonTypeByName("grass")));
     }
 
 }

@@ -39,7 +39,7 @@ class PokemonTypeServiceIT {
     void saveTypeShouldSaveType(){
         pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist("grass");
 
-        Assertions.assertEquals(1, pokemonTypeRepo.findAll().size());
+        Assertions.assertEquals(1, pokemonTypeService.getAllPokemonTypes().size());
     }
 
     @Test
@@ -54,7 +54,7 @@ class PokemonTypeServiceIT {
                         pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
                                 typeData.path("name").asText()));
 
-        pokemonTypeRepo.findAll().forEach(type ->{
+        pokemonTypeService.getAllPokemonTypes().forEach(type ->{
             type.setHalfDamageFrom(new ArrayList<>());
             type.setDoubleDamageFrom(new ArrayList<>());
             type.setNoDamageFrom(new ArrayList<>());
@@ -62,12 +62,12 @@ class PokemonTypeServiceIT {
         });
 
         pokemonTypeService.addTypeRelationshipsIfTheyDoNotAlreadyExist();
-        List<PokemonType> weaknesses = pokemonTypeRepo.findByName(typeName).getDoubleDamageFrom();
-        List<PokemonType> strengths = pokemonTypeRepo.findByName(typeName).getHalfDamageFrom();
+        List<PokemonType> weaknesses = pokemonTypeService.getPokemonTypeByName(typeName).getDoubleDamageFrom();
+        List<PokemonType> strengths = pokemonTypeService.getPokemonTypeByName(typeName).getHalfDamageFrom();
 
-        Assertions.assertTrue(weaknesses.contains(pokemonTypeRepo.findByName(weaknessName)));
-        Assertions.assertTrue(strengths.contains(pokemonTypeRepo.findByName(resistName)));
-        Assertions.assertFalse(strengths.contains(pokemonTypeRepo.findByName(weaknessName)));
+        Assertions.assertTrue(weaknesses.contains(pokemonTypeService.getPokemonTypeByName(weaknessName)));
+        Assertions.assertTrue(strengths.contains(pokemonTypeService.getPokemonTypeByName(resistName)));
+        Assertions.assertFalse(strengths.contains(pokemonTypeService.getPokemonTypeByName(weaknessName)));
     }
 
     @Test

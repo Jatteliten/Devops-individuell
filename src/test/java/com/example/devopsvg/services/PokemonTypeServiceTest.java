@@ -3,6 +3,7 @@ package com.example.devopsvg.services;
 import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonTypeRepo;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,37 @@ class PokemonTypeServiceTest {
 
     @Value("${filepath.bulbasaur.json}")
     private String bulbasaurFilePath;
+
+    @Test
+    void getAllPokemonTypesShouldReturnAllPokemonTypes() {
+        PokemonType typeOne = PokemonType.builder().name("typeOne").build();
+        PokemonType typeTwo = PokemonType.builder().name("typeTwo").build();
+        List<PokemonType> typeList = List.of(typeOne, typeTwo);
+
+        Mockito.when(pokemonTypeRepo.findAll()).thenReturn(typeList);
+
+        Assertions.assertEquals(2, pokemonTypeService.getAllPokemonTypes().size());
+        Assertions.assertTrue(pokemonTypeService.getAllPokemonTypes().contains(typeOne));
+        Assertions.assertTrue(pokemonTypeService.getAllPokemonTypes().contains(typeTwo));
+    }
+
+    @Test
+    void getPokemonTypeByNameShouldReturnCorrectPokemonType() {
+        String typeString = "typeOne";
+        PokemonType typeOne = PokemonType.builder().name(typeString).build();
+
+        Mockito.when(pokemonTypeRepo.findByName("typeOne")).thenReturn(typeOne);
+
+        Assertions.assertEquals(typeOne, pokemonTypeService.getPokemonTypeByName(typeString));
+    }
+
+    @Test
+    void countNumberOfTypesInDatabaseShouldCountTheCorrectAmountOfTypesInDatabase() {
+        Long amount = 3L;
+        Mockito.when(pokemonTypeRepo.count()).thenReturn(amount);
+
+        Assertions.assertEquals(amount, pokemonTypeService.countNumberOfTypesInDatabase());
+    }
 
     @Test
     void repoShouldReturnCorrectTypeWhenFindingByName() {

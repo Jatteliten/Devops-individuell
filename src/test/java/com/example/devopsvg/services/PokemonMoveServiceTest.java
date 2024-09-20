@@ -27,17 +27,14 @@ class PokemonMoveServiceTest {
     private String poundFilePath;
 
     @Test
-    void repoShouldReturnCorrectMoveWhenFindingByName() {
-        String testName = "pound";
-        String testClass = "physical";
-        Mockito.when(pokemonMoveRepo.findByName(testName)).thenReturn(
-                PokemonMove.builder()
-                        .name(testName)
-                        .damageClass(testClass)
-                        .build());
+    void getPokemonMoveByNameShouldReturnCorrectPokemon(){
+        String moveName = "attack";
+        PokemonMove move = PokemonMove.builder().name(moveName).build();
+        Mockito.when(pokemonMoveRepo.findByName(moveName)).thenReturn(move);
 
-        Assertions.assertEquals(testClass, pokemonMoveRepo.findByName(testName).getDamageClass());
+        Assertions.assertEquals(move, pokemonMoveService.getPokemonMoveByName(moveName));
     }
+
     @Test
     void createPokemonMoveFromJsonShouldCreateCorrectMove() {
         PokemonMove pokemonMove= pokemonMoveService.createMoveFromJson(
