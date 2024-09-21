@@ -28,7 +28,7 @@ jobs:
           gradle-version: '8.9'
 
       - name: Build
-        run: ./gradlew clean build
+        run: ./gradlew clean build -Dspring.profiles.active=test
 
       - run: mv build/libs/Devops-vg-0.0.1-SNAPSHOT.jar build/libs/Devops-vg-1.${{ env.build-number }}.1.jar
 
