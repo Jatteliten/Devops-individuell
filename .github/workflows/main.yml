@@ -8,10 +8,9 @@ env:
   build-number: ${{GITHUB.RUN_NUMBER}}
 
 permissions: write-all
-  
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -29,7 +28,7 @@ jobs:
           gradle-version: '8.9'
 
       - name: Build
-        run: ./gradlew clean build   
+        run: ./gradlew clean build
 
       - run: mv build/libs/Devops-vg-0.0.1-SNAPSHOT.jar build/libs/Devops-vg-1.${{ env.build-number }}.1.jar
 
@@ -46,10 +45,9 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build --platform linux/amd64 -t jatteliten/pokemon-list:${{ env.build-number }} .
+          docker build --platform linux/amd64 -t jatteliten/pokemon-list:${{ env.build-number }} -t jatteliten/pokemon-list:latest .
 
       - name: Push Docker image
         run: |
           docker push jatteliten/pokemon-list:${{ env.build-number }}
           docker push jatteliten/pokemon-list:latest
-
