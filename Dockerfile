@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM amazoncorretto-21 AS build
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY src src
 
 RUN ./gradlew build -x test
 
-FROM eclipse-temurin:21-jdk-alpine
+FROM amazoncorretto-21
 
 WORKDIR /app
 
