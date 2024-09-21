@@ -1,22 +1,15 @@
-FROM amazoncorretto-21 AS build
+FROM gradle:8.9-alpine as gradle-build
+
+COPY ./ /app/
 
 WORKDIR /app
 
-COPY build.gradle settings.gradle ./
-COPY gradle gradle
+RUN gradle clean build -x test --profile production
 
-RUN ./gradlew dependencies
+FROM amazoncorretto:21-alpine
 
-COPY src src
-
-RUN ./gradlew build -x test
-
-FROM amazoncorretto-21
-
-WORKDIR /app
-
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=gradle-build /app/build/libs/Devops-vg-0.0.1-SNAPSHOT.jar /app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "/app.jar"]
