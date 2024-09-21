@@ -7,8 +7,6 @@ on:
   pull_request:
     branches:
       - master
-env:
-  build-number: ${{GITHUB.RUN_NUMBER}}
 
 jobs:
   build:
@@ -29,7 +27,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build --build-arg BUILD_NUMBER=${{ env.build-number }} -t jatteliten/pokemon-list .
+          docker build -t jatteliten/pokemon-list .
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
