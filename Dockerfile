@@ -4,7 +4,7 @@ COPY ./ /app/
 
 WORKDIR /app
 
-RUN gradle clean build -x test --profile production
+RUN gradle clean build -x test
 
 FROM amazoncorretto:21-alpine
 
