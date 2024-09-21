@@ -39,5 +39,5 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker push jatteliten/pokemon-list
+          docker push jatteliten/pokemon-list:${{ env.build-number }}
           docker push jatteliten/pokemon-list:latest
