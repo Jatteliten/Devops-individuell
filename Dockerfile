@@ -4,7 +4,7 @@ COPY ./ /app/
 
 WORKDIR /app
 
-RUN gradle clean build -x test
+RUN ./gradlew clean build
 
 FROM amazoncorretto:21-alpine
 
