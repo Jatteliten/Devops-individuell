@@ -1,8 +1,10 @@
 FROM eclipse-temurin:21-jdk-alpine
 
+ARG BUILD_NUMBER
+
 WORKDIR /app
 
-COPY staging/Devops-vg-1.*.jar /app.jar
+COPY staging/Devops-vg-1.${BUILD_NUMBER}.1.jar /app.jar
 
 EXPOSE 8080
 

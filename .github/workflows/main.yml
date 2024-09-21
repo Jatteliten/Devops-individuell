@@ -45,7 +45,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build --platform linux/amd64 -t jatteliten/pokemon-list:${{ env.build-number }} -t jatteliten/pokemon-list:latest .
+          docker build --platform linux/amd64 --build-arg BUILD_NUMBER=${{ env.build-number }} -t jatteliten/pokemon-list:${{ env.build-number }} -t jatteliten/pokemon-list:latest .
 
       - name: Push Docker image
         run: |
