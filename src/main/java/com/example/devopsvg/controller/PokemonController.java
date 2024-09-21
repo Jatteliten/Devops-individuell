@@ -35,6 +35,7 @@ public class PokemonController {
         model.addAttribute("pokemonlist", pokemonList);
         model.addAttribute("page", page);
         model.addAttribute("types", pokemonTypeService.getAllTypeNamesList());
+        model.addAttribute("isFullList", true);
         return "pokemon-list.html";
     }
 
@@ -42,6 +43,7 @@ public class PokemonController {
     public String pokemonListByColor(@RequestParam("type") String type, Model model) {
         model.addAttribute("pokemonlist", pokemonService.getAllPokemonByTypeForList(type));
         model.addAttribute("types", pokemonTypeService.getAllTypeNamesList());
+        model.addAttribute("isFullList", false);
         return "pokemon-list.html";
     }
 
@@ -49,6 +51,7 @@ public class PokemonController {
     public String pokemonListBySearch(@RequestParam("searchWord") String input, Model model){
         model.addAttribute("pokemonlist", pokemonService.getAllPokemonWithNameThatContainsString(input));
         model.addAttribute("types", pokemonTypeService.getAllTypeNamesList());
+        model.addAttribute("isFullList", false);
         return "pokemon-list.html";
     }
 

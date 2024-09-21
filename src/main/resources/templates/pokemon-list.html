@@ -67,7 +67,7 @@
         </tbody>
     </table>
 
-    <div class="centered-div">
+    <div class="centered-div" th:if="${isFullList}">
         <button id="load-more" class="btn btn-outline-secondary" onclick="loadMore()">Load More</button>
         <button id="loading-button" class="btn btn-outline-dark"
                 style="display: none; pointer-events: none; cursor: default; text-decoration: none;">Searching Pokédex...</button>
