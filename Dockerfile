@@ -4,7 +4,7 @@ ARG BUILD_NUMBER
 
 WORKDIR /app
 
-COPY staging/Devops-vg-1.${BUILD_NUMBER}.1.jar /app.jar
+COPY build/libs/Devops-vg-1.${BUILD_NUMBER}.1.jar /app.jar
 
 EXPOSE 8080
 
