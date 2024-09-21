@@ -2,7 +2,7 @@ FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /app
 
-COPY build/libs/*.jar /app.jar
+COPY staging/Devops-vg-1.*.jar /app.jar
 
 EXPOSE 8080
 
