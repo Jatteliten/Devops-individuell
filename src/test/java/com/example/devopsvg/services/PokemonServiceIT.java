@@ -18,6 +18,7 @@ import org.springframework.test.context.TestPropertySource;
 import utils.JsonTestUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
@@ -77,7 +78,7 @@ class PokemonServiceIT {
     void savePokemonToDatabaseShouldSavePokemon() {
         pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(1);
 
-        Assertions.assertEquals(1, pokemonService.getAllPokemon().size());
+        Assertions.assertEquals(1, pokemonService.getAllPokemonInPokedexOrder().size());
     }
 
     @Test
@@ -122,6 +123,21 @@ class PokemonServiceIT {
                 "The plant sprouts and grows with this POKéMON.";
 
         Assertions.assertEquals(expectedFlavorText, pokemonService.getPokemonByName(TEST_POKEMON_NAME).getFlavorText());
+    }
+
+    @Test
+    @Transactional
+    void getAllPokemonInPokedexOrderShouldGetAllPokemonInCorrectOrderByPokedexId(){
+        pokemonRepo.save(Pokemon.builder().pokedexId(3).build());
+        pokemonRepo.save(Pokemon.builder().pokedexId(1).build());
+        pokemonRepo.save(Pokemon.builder().pokedexId(4).build());
+        pokemonRepo.save(Pokemon.builder().pokedexId(2).build());
+
+        List<Pokemon> pokemonList = pokemonService.getAllPokemonInPokedexOrder();
+
+        for(int i = 0; i < 4; i++){
+            Assertions.assertEquals(i + 1, pokemonList.get(i).getPokedexId());
+        }
     }
 
     @Test

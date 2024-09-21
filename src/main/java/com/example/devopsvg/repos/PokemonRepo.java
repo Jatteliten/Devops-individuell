@@ -10,4 +10,5 @@ public interface PokemonRepo extends JpaRepository<Pokemon, Long> {
     Pokemon findByPokedexId(int id);
     List<Pokemon> findAllByTypes_Name(String typeName);
     List<Pokemon> findAllByNameIsContainingIgnoreCase(String input);
+    List<Pokemon> findAllByOrderByPokedexIdAsc();
 }

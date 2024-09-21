@@ -41,8 +41,8 @@ public class PokemonService {
         this.pokemonMoveService = pokemonMoveService;
     }
 
-    public List<Pokemon> getAllPokemon(){
-        return pokemonRepo.findAll();
+    public List<Pokemon> getAllPokemonInPokedexOrder(){
+        return pokemonRepo.findAllByOrderByPokedexIdAsc();
     }
 
     public Pokemon getPokemonByName(String name){
@@ -128,7 +128,7 @@ public class PokemonService {
     }
 
     public List<PokemonListDto> getAllPokemonForList(){
-        return getAllPokemon().stream().map(this::convertPokemonToPokemonListDto).toList();
+        return getAllPokemonInPokedexOrder().stream().map(this::convertPokemonToPokemonListDto).toList();
     }
 
     public List<PokemonListDto> getAllPokemonByTypeForList(String type){
@@ -195,7 +195,7 @@ public class PokemonService {
     }
 
     public Pokemon findNextPokemonInPokeDex(Pokemon pokemon){
-        if(pokemon.getPokedexId() != getAllPokemon().size()) {
+        if(pokemon.getPokedexId() != getAllPokemonInPokedexOrder().size()) {
             return getPokemonByPokedexId(pokemon.getPokedexId() + 1);
         }
         return null;

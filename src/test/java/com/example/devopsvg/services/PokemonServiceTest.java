@@ -27,15 +27,15 @@ class PokemonServiceTest {
     private final JsonTestUtils jsonTestUtils = new JsonTestUtils();
 
     @Test
-    void getAllPokemonShouldGetAllPokemon() {
+    void getAllPokemonInPokedexOrderShouldGetAllPokemon() {
         Pokemon pokemonOne = Pokemon.builder().name("testOne").build();
         Pokemon pokemonTwo = Pokemon.builder().name("testTwo").build();
         List<Pokemon> pokemonList = List.of(pokemonOne, pokemonTwo);
-        Mockito.when(pokemonRepo.findAll()).thenReturn(pokemonList);
+        Mockito.when(pokemonRepo.findAllByOrderByPokedexIdAsc()).thenReturn(pokemonList);
 
-        Assertions.assertEquals(2, pokemonService.getAllPokemon().size());
-        Assertions.assertTrue(pokemonService.getAllPokemon().contains(pokemonOne));
-        Assertions.assertTrue(pokemonService.getAllPokemon().contains(pokemonTwo));
+        Assertions.assertEquals(2, pokemonService.getAllPokemonInPokedexOrder().size());
+        Assertions.assertTrue(pokemonService.getAllPokemonInPokedexOrder().contains(pokemonOne));
+        Assertions.assertTrue(pokemonService.getAllPokemonInPokedexOrder().contains(pokemonTwo));
     }
 
     @Test
