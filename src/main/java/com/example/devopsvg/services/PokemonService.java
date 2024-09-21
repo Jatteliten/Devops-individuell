@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +66,14 @@ public class PokemonService {
 
     public Long countNumberOfPokemonInDatabase(){
         return pokemonRepo.count();
+    }
+
+    public List<PokemonListDto> getPokemonListDtoPage(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Pokemon> pokemonPage = pokemonRepo.findAllByOrderByPokedexIdAsc(pageable);
+        return pokemonPage.stream()
+                .map(this::convertPokemonToPokemonListDto)
+                .collect(Collectors.toList());
     }
 
     public void savePokemonToDatabaseIfItDoesNotAlreadyExist(int pokemonId){

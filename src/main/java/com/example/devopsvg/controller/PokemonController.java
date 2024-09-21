@@ -1,5 +1,6 @@
 package com.example.devopsvg.controller;
 
+import com.example.devopsvg.dto.pokemonViews.PokemonListDto;
 import com.example.devopsvg.dto.pokemonViews.PokemonNextOrPreviousDto;
 import com.example.devopsvg.model.Pokemon;
 import com.example.devopsvg.services.PokemonService;
@@ -9,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/pokemon")
@@ -23,8 +26,14 @@ public class PokemonController {
     }
 
     @GetMapping("/list")
-    public String pokemonList(Model model){
-        model.addAttribute("pokemonlist", pokemonService.getAllPokemonForList());
+    public String pokemonList(
+            @RequestParam(value = "page", defaultValue = "0") int page, Model model) {
+
+        int pageSize = 50;
+        List<PokemonListDto> pokemonList = pokemonService.getPokemonListDtoPage(page, pageSize);
+
+        model.addAttribute("pokemonlist", pokemonList);
+        model.addAttribute("page", page);
         model.addAttribute("types", pokemonTypeService.getAllTypeNamesList());
         return "pokemon-list.html";
     }
