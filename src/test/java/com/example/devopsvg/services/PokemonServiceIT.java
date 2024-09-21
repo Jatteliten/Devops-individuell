@@ -1,5 +1,6 @@
 package com.example.devopsvg.services;
 
+import com.example.devopsvg.dto.pokemonViews.PokemonListDto;
 import com.example.devopsvg.model.Pokemon;
 import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonMoveRepo;
@@ -135,10 +136,34 @@ class PokemonServiceIT {
 
         List<Pokemon> pokemonList = pokemonService.getAllPokemonInPokedexOrder();
 
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < pokemonList.size(); i++){
             Assertions.assertEquals(i + 1, pokemonList.get(i).getPokedexId());
         }
     }
+
+    @Test
+    @Transactional
+    void getPokemonListDtoPageInPokedexOrderShouldReturnCorrectPage(){
+        pokemonRepo.save(Pokemon.builder().pokedexId(1).build());
+        pokemonRepo.save(Pokemon.builder().pokedexId(2).build());
+        pokemonRepo.save(Pokemon.builder().pokedexId(3).build());
+        pokemonRepo.save(Pokemon.builder().pokedexId(4).build());
+        pokemonRepo.save(Pokemon.builder().pokedexId(5).build());
+
+        List<PokemonListDto> firstPageList = pokemonService.getPokemonListDtoPageInPokedexOrder(0, 3);
+        List<PokemonListDto> secondPageList = pokemonService.getPokemonListDtoPageInPokedexOrder(1, 3);
+
+        Assertions.assertEquals(3, firstPageList.size());
+        Assertions.assertEquals(2, secondPageList.size());
+
+        for(int i = 0; i < firstPageList.size(); i++){
+            Assertions.assertEquals(firstPageList.get(i).getPokedexId(), i +1);
+        }
+        for(int i = 0; i < secondPageList.size(); i++){
+            Assertions.assertEquals(secondPageList.get(i).getPokedexId(), i + 4);
+        }
+    }
+
 
     @Test
     @Transactional

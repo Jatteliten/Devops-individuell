@@ -68,9 +68,10 @@ public class PokemonService {
         return pokemonRepo.count();
     }
 
-    public List<PokemonListDto> getPokemonListDtoPage(int page, int pageSize) {
+    public List<PokemonListDto> getPokemonListDtoPageInPokedexOrder(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Pokemon> pokemonPage = pokemonRepo.findAllByOrderByPokedexIdAsc(pageable);
+
         return pokemonPage.stream()
                 .map(this::convertPokemonToPokemonListDto)
                 .collect(Collectors.toList());
@@ -136,10 +137,6 @@ public class PokemonService {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public List<PokemonListDto> getAllPokemonForList(){
-        return getAllPokemonInPokedexOrder().stream().map(this::convertPokemonToPokemonListDto).toList();
     }
 
     public List<PokemonListDto> getAllPokemonByTypeForList(String type){

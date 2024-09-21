@@ -30,7 +30,7 @@ public class PokemonController {
             @RequestParam(value = "page", defaultValue = "0") int page, Model model) {
 
         int pageSize = 50;
-        List<PokemonListDto> pokemonList = pokemonService.getPokemonListDtoPage(page, pageSize);
+        List<PokemonListDto> pokemonList = pokemonService.getPokemonListDtoPageInPokedexOrder(page, pageSize);
 
         model.addAttribute("pokemonlist", pokemonList);
         model.addAttribute("page", page);
