@@ -35,4 +35,4 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker push your-dockerhub-username/pokemon-list:latest
+          docker push jatteliten/pokemon-list:latest
