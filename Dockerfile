@@ -1,10 +1,21 @@
-FROM eclipse-temurin:21-jdk-alpine
-
-ARG BUILD_NUMBER
+FROM openjdk:21-jdk-slim AS build
 
 WORKDIR /app
 
-COPY build/libs/Devops-vg-1.${BUILD_NUMBER}.1.jar /app.jar
+COPY build.gradle settings.gradle ./
+COPY gradle gradle
+
+RUN ./gradlew dependencies
+
+COPY src src
+
+RUN ./gradlew build -x test
+
+FROM openjdk:21-jre-slim
+
+WORKDIR /app
+
+COPY --from=build /app/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
