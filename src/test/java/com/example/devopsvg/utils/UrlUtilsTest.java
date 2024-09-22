@@ -4,11 +4,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 
 @SpringBootTest
 @TestPropertySource(properties = "pokemon.api.remove_response_limit=?limit=10000&offset=0")
+@ActiveProfiles("test")
 class UrlUtilsTest {
     @Autowired
     private UrlUtils urlUtils;
