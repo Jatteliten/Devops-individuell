@@ -58,7 +58,10 @@ public class PokemonController {
     @GetMapping("/pokemon-info")
     public String pokemonInformation(@RequestParam("pokemonName") String name, Model model){
         Pokemon pokemon = pokemonService.getPokemonByName(pokemonService.capitalizeFirstLetter(name));
-
+        if(pokemon == null){
+            model.addAttribute("errorMessage", name + " does not exist in pokédex");
+            return "error.html";
+        }
         model.addAttribute("pokemon", pokemon);
         model.addAttribute("pokemonTypeMatchUps", pokemonService.calculateDamageTakenMultipliers(pokemon));
         findNextOrPreviousPokemonAndAddToModelIfItIsNotNull(

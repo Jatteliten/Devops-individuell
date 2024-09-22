@@ -8,6 +8,6 @@
 <body class="container">
 <h1>Something went wrong</h1>
 <a href="/"><button type="button" class="btn btn-secondary">Home</button></a>
-<p th:text="${error.message}">Error details here...</p>
+<h4 class="text-danger mt-3" th:if="${errorMessage}" th:text="${errorMessage}">Error details here...</h4>
 </body>
 </html>
