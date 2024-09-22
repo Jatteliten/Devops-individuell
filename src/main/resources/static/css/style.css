@@ -12,8 +12,6 @@
     border: 1px solid #3d3d3d;
 }
 
-.type-normal { background-color: white; color: black;}
-.type-stellar { background-color: white; color: black;}
 .type-unknown { background-color: white; color: black;}
 .type-fire { background-color: #EE8130; }
 .type-water { background-color: #6390F0; }
