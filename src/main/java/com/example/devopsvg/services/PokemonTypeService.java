@@ -38,10 +38,11 @@ public class PokemonTypeService {
     }
 
     public void saveTypeToDatabaseIfItDoesNotAlreadyExist(String name){
+        JsonNode pokemonTypeData = jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl + name);
         Optional<PokemonType> tempPokemonType = Optional.ofNullable(
                 getPokemonTypeByName(name));
 
-        if(tempPokemonType.isEmpty()){
+        if(tempPokemonType.isEmpty() && !pokemonTypeData.path("pokemon").isEmpty()){
             pokemonTypeRepo.save(PokemonType.builder()
                     .name(name)
                     .build());

@@ -86,8 +86,7 @@ public class FetchPokemonData implements CommandLineRunner {
             pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
                     pokemonTypeNode.path("name").asText());
 
-            currentProgress++;
-            printProgressBar(numberOfOperations);
+            incrementProgressAndPrintProgressBar(numberOfOperations);
         }
         pokemonTypeService.addTypeRelationshipsIfTheyDoNotAlreadyExist();
     }
@@ -99,8 +98,7 @@ public class FetchPokemonData implements CommandLineRunner {
             pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(
                     urlUtils.extractIdFromUrl(pokemonMoveNode.path("url").asText()));
 
-            currentProgress++;
-            printProgressBar(numberOfOperations);
+            incrementProgressAndPrintProgressBar(numberOfOperations);
         }
     }
 
@@ -112,8 +110,7 @@ public class FetchPokemonData implements CommandLineRunner {
                 pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(
                         urlUtils.extractIdFromUrl(pokemonNode.path("url").asText()));
             }
-            currentProgress++;
-            printProgressBar(numberOfOperations);
+            incrementProgressAndPrintProgressBar(numberOfOperations);
         }
     }
 
@@ -123,7 +120,8 @@ public class FetchPokemonData implements CommandLineRunner {
         numberOfOperations = resultsNode.size();
     }
 
-    private void printProgressBar(int totalMoves) {
+    private void incrementProgressAndPrintProgressBar(int totalMoves) {
+        currentProgress++;
         int progressBarWidth = 30;
         int progress = (int) ((double) currentProgress / totalMoves * progressBarWidth);
 

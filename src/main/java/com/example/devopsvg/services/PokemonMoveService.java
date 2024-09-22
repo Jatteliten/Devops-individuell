@@ -33,7 +33,6 @@ public class PokemonMoveService {
 
     public Long countNumberOfMovesInDatabase(){ return pokemonMoveRepo.count(); }
 
-
     public void saveMoveToDatabaseIfItDoesNotAlreadyExist(int pokemonMoveId){
         JsonNode pokemonData = jsonExtractor.fetchJsonFromUrl(pokemonMovesApiUrl + pokemonMoveId);
         Optional<PokemonMove> tempPokemonMove = Optional.ofNullable(
