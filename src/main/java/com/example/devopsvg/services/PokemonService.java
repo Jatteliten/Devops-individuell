@@ -89,7 +89,7 @@ public class PokemonService {
     public Pokemon createPokemonFromJsonNode(JsonNode pokemonData) {
         return Pokemon.builder()
                 .pokedexId(pokemonData.path("id").asInt())
-                .name(capitalizeFirstLetter(pokemonData.path("name").asText()))
+                .name(capitalizeFirstLetter(pokemonData.path("species").path("name").asText()))
                 .spriteLink(pokemonData.path("sprites")
                         .path("front_default")
                         .asText())
