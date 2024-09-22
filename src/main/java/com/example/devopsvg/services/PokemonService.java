@@ -8,9 +8,7 @@ import com.example.devopsvg.repos.PokemonRepo;
 import com.example.devopsvg.utils.JsonExtractor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +23,7 @@ import java.util.LinkedHashMap;
 
 @Service
 public class PokemonService {
-    private final JsonExtractor jsonExtractor = new JsonExtractor();
-    private final RestTemplate restTemplate;
-    private final ObjectMapper objectMapper;
+    private final JsonExtractor jsonExtractor;
     private final PokemonRepo pokemonRepo;
     private final PokemonTypeService pokemonTypeService;
     private final PokemonMoveService pokemonMoveService;
@@ -35,36 +31,35 @@ public class PokemonService {
     @Value("${pokemon.list.api.url}")
     private String pokemonListApiUrl;
 
-    public PokemonService(RestTemplate restTemplate, ObjectMapper objectMapper,
-                          PokemonRepo pokemonRepo, PokemonTypeService pokemonTypeService, PokemonMoveService pokemonMoveService) {
-        this.restTemplate = restTemplate;
-        this.objectMapper = objectMapper;
+    public PokemonService(JsonExtractor jsonExtractor, PokemonRepo pokemonRepo,
+                          PokemonTypeService pokemonTypeService, PokemonMoveService pokemonMoveService) {
+        this.jsonExtractor = jsonExtractor;
         this.pokemonRepo = pokemonRepo;
         this.pokemonTypeService = pokemonTypeService;
         this.pokemonMoveService = pokemonMoveService;
     }
 
-    public List<Pokemon> getAllPokemonInPokedexOrder(){
+    public List<Pokemon> getAllPokemonInPokedexOrder() {
         return pokemonRepo.findAllByOrderByPokedexIdAsc();
     }
 
-    public Pokemon getPokemonByName(String name){
+    public Pokemon getPokemonByName(String name) {
         return pokemonRepo.findByName(name);
     }
 
-    public List<Pokemon> getAllPokemonWithGivenType(String typeName){
+    public List<Pokemon> getAllPokemonWithGivenType(String typeName) {
         return pokemonRepo.findAllByTypes_Name(typeName);
     }
 
-    public Pokemon getPokemonByPokedexId(int id){
+    public Pokemon getPokemonByPokedexId(int id) {
         return pokemonRepo.findByPokedexId(id);
     }
 
-    public List<Pokemon> getAllPokemonWithNameThatContainsString(String input){
+    public List<Pokemon> getAllPokemonWithNameThatContainsString(String input) {
         return pokemonRepo.findAllByNameIsContainingIgnoreCase(input);
     }
 
-    public Long countNumberOfPokemonInDatabase(){
+    public Long countNumberOfPokemonInDatabase() {
         return pokemonRepo.count();
     }
 
@@ -77,23 +72,21 @@ public class PokemonService {
                 .collect(Collectors.toList());
     }
 
-    public void savePokemonToDatabaseIfItDoesNotAlreadyExist(int pokemonId){
-        JsonNode pokemonData = getPokemonDataFromApi(pokemonId);
+    public void savePokemonToDatabaseIfItDoesNotAlreadyExist(int pokemonId) {
+        JsonNode pokemonData = jsonExtractor.getSpecificEntryDataFromApiById(pokemonListApiUrl, pokemonId);
         Optional<Pokemon> tempPokemon = Optional.ofNullable(
                 getPokemonByName(pokemonData.path("name").asText()));
-        if(tempPokemon.isEmpty()){
-            savePokemonToDatabase(pokemonData);
+        if (tempPokemon.isEmpty()) {
+            savePokemonToDatabaseFromJsonNode(pokemonData);
         }
     }
 
-    private void savePokemonToDatabase(JsonNode pokemonData){
-        Pokemon newPokemon = createPokemonFromJson(pokemonData);
-
+    private void savePokemonToDatabaseFromJsonNode(JsonNode pokemonData) {
+        Pokemon newPokemon = createPokemonFromJsonNode(pokemonData);
         pokemonRepo.save(newPokemon);
-        System.out.println(newPokemon.getName() + " saved.");
     }
 
-    public Pokemon createPokemonFromJson(JsonNode pokemonData){
+    public Pokemon createPokemonFromJsonNode(JsonNode pokemonData) {
         return Pokemon.builder()
                 .pokedexId(pokemonData.path("id").asInt())
                 .name(capitalizeFirstLetter(pokemonData.path("name").asText()))
@@ -109,12 +102,12 @@ public class PokemonService {
                         .path("species")
                         .path("url")
                         .asText()))
-                .types(pokemonTypeService.getPokemonTypesListFromApi(pokemonData))
+                .types(pokemonTypeService.getPokemonTypesListFromPokemonEntryFromApi(pokemonData))
                 .moves(pokemonMoveService.getMoveListFromApi(pokemonData))
                 .build();
     }
 
-    public String findFlavorTextInSpeciesEntry(String url){
+    public String findFlavorTextInSpeciesEntry(String url) {
         JsonNode entries = jsonExtractor.fetchJsonFromUrl(url)
                 .path("flavor_text_entries");
 
@@ -128,22 +121,11 @@ public class PokemonService {
         return "No English flavor text found.";
     }
 
-    public JsonNode getPokemonDataFromApi(int pokemonId) {
-        String jsonResponse = restTemplate.getForObject(pokemonListApiUrl + pokemonId, String.class);
-
-        try {
-            return objectMapper.readTree(jsonResponse);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public List<PokemonListDto> getAllPokemonByTypeForList(String type){
+    public List<PokemonListDto> getAllPokemonByTypeForList(String type) {
         return getAllPokemonWithGivenType(type).stream().map(this::convertPokemonToPokemonListDto).toList();
     }
 
-    public PokemonListDto convertPokemonToPokemonListDto(Pokemon pokemon){
+    public PokemonListDto convertPokemonToPokemonListDto(Pokemon pokemon) {
         return PokemonListDto.builder()
                 .name(pokemon.getName())
                 .pokedexId(pokemon.getPokedexId())
@@ -152,7 +134,7 @@ public class PokemonService {
                 .build();
     }
 
-    public PokemonNextOrPreviousDto convertPokemonToPokemonNextOrPreviousDto(Pokemon pokemon){
+    public PokemonNextOrPreviousDto convertPokemonToPokemonNextOrPreviousDto(Pokemon pokemon) {
         return PokemonNextOrPreviousDto.builder()
                 .name(pokemon.getName())
                 .spriteLink(pokemon.getSpriteLink())
@@ -191,7 +173,7 @@ public class PokemonService {
         }
     }
 
-    public String removeLineBreaksAndFormFeedCharactersFromFlavorText(String text){
+    public String removeLineBreaksAndFormFeedCharactersFromFlavorText(String text) {
         return text.replace("\n", " ").replace("\u000c", " ");
     }
 
@@ -202,21 +184,21 @@ public class PokemonService {
         return Character.toUpperCase(input.charAt(0)) + input.substring(1);
     }
 
-    public Pokemon findNextPokemonInPokeDex(Pokemon pokemon){
-        if(pokemon.getPokedexId() != getAllPokemonInPokedexOrder().size()) {
+    public Pokemon findNextPokemonInPokeDex(Pokemon pokemon) {
+        if (pokemon.getPokedexId() != getAllPokemonInPokedexOrder().size()) {
             return getPokemonByPokedexId(pokemon.getPokedexId() + 1);
         }
         return null;
     }
 
-    public Pokemon findPreviousPokemonInPokeDex(Pokemon pokemon){
-        if(pokemon.getPokedexId() != 1) {
+    public Pokemon findPreviousPokemonInPokeDex(Pokemon pokemon) {
+        if (pokemon.getPokedexId() != 1) {
             return getPokemonByPokedexId(pokemon.getPokedexId() - 1);
         }
         return null;
     }
 
-    public Pokemon getRandomPokemon(){
+    public Pokemon getRandomPokemon() {
         Random rand = new Random();
 
         return getPokemonByPokedexId(rand.nextInt((int) (countNumberOfPokemonInDatabase() + 1)));

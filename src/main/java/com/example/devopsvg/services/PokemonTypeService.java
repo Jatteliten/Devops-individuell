@@ -15,14 +15,14 @@ import java.util.Optional;
 @Service
 public class PokemonTypeService {
     private final PokemonTypeRepo pokemonTypeRepo;
-
-    private final JsonExtractor jsonExtractor = new JsonExtractor();
+    private final JsonExtractor jsonExtractor;
 
     @Value("${pokemon.types.api.url}")
     private String pokemonTypesApiUrl;
 
-    public PokemonTypeService(PokemonTypeRepo pokemonTypeRepo){
+    public PokemonTypeService(PokemonTypeRepo pokemonTypeRepo, JsonExtractor jsonExtractor){
         this.pokemonTypeRepo = pokemonTypeRepo;
+        this.jsonExtractor = jsonExtractor;
     }
 
     public List<PokemonType> getAllPokemonTypes(){
@@ -48,7 +48,7 @@ public class PokemonTypeService {
         }
     }
 
-    public List<PokemonType> getPokemonTypesListFromApi(JsonNode pokemonData){
+    public List<PokemonType> getPokemonTypesListFromPokemonEntryFromApi(JsonNode pokemonData){
         List<PokemonType> types = new ArrayList<>();
         for (JsonNode typeNode : pokemonData.path("types")) {
             types.add(getPokemonTypeByName(

@@ -2,11 +2,10 @@ package com.example.devopsvg.services;
 
 import com.example.devopsvg.model.PokemonMove;
 import com.example.devopsvg.repos.PokemonMoveRepo;
+import com.example.devopsvg.utils.JsonExtractor;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,28 +13,29 @@ import java.util.Optional;
 
 @Service
 public class PokemonMoveService {
-    private final RestTemplate restTemplate;
-    private final ObjectMapper objectMapper;
     private final PokemonTypeService pokemonTypeService;
     private final PokemonMoveRepo pokemonMoveRepo;
+    private final JsonExtractor jsonExtractor;
 
     @Value("${pokemon.moves.api.url}")
     private String pokemonMovesApiUrl;
 
-    public PokemonMoveService(RestTemplate restTemplate, ObjectMapper objectMapper,
-                              PokemonTypeService pokemonTypeService, PokemonMoveRepo pokemonMoveRepo) {
-        this.restTemplate = restTemplate;
-        this.objectMapper = objectMapper;
+    public PokemonMoveService(PokemonTypeService pokemonTypeService, PokemonMoveRepo pokemonMoveRepo,
+                              JsonExtractor jsonExtractor) {
         this.pokemonTypeService = pokemonTypeService;
         this.pokemonMoveRepo = pokemonMoveRepo;
+        this.jsonExtractor = jsonExtractor;
     }
 
-    PokemonMove getPokemonMoveByName(String name){
+    public PokemonMove getPokemonMoveByName(String name){
         return pokemonMoveRepo.findByName(name);
     }
 
+    public Long countNumberOfMovesInDatabase(){ return pokemonMoveRepo.count(); }
+
+
     public void saveMoveToDatabaseIfItDoesNotAlreadyExist(int pokemonMoveId){
-        JsonNode pokemonData = getMoveDataFromApi(pokemonMoveId);
+        JsonNode pokemonData = jsonExtractor.getSpecificEntryDataFromApiById(pokemonMovesApiUrl, pokemonMoveId);
         Optional<PokemonMove> tempPokemonMove = Optional.ofNullable(
                 getPokemonMoveByName(pokemonData.path("name").asText()));
         if(tempPokemonMove.isEmpty()){
@@ -74,15 +74,4 @@ public class PokemonMoveService {
         return moves;
     }
 
-    public JsonNode getMoveDataFromApi(int pokemonMoveId) {
-        String url = pokemonMovesApiUrl + pokemonMoveId;
-        String jsonResponse = restTemplate.getForObject(url, String.class);
-
-        try {
-            return objectMapper.readTree(jsonResponse);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

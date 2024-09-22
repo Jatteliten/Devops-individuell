@@ -2,9 +2,15 @@ package com.example.devopsvg.utils;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
+@SpringBootTest
+@ActiveProfiles("test")
 class JsonExtractorTestIT {
-    private final JsonExtractor jsonExtractor = new JsonExtractor();
+    @Autowired
+    private JsonExtractor jsonExtractor;
 
     @Test
     void fetchJsonFromUrlShouldFetchCorrectData() {

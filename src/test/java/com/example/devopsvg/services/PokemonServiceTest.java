@@ -100,7 +100,7 @@ class PokemonServiceTest {
 
     @Test
     void createPokemonFromJsonShouldCreateCorrectPokemon() {
-        Pokemon pokemon = pokemonService.createPokemonFromJson(
+        Pokemon pokemon = pokemonService.createPokemonFromJsonNode(
                 jsonTestUtils.getJsonFromFile("src/test/resources/bulbasaur.json"));
 
         Assertions.assertEquals("Bulbasaur", pokemon.getName());

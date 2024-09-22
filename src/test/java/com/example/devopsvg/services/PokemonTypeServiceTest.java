@@ -74,7 +74,7 @@ class PokemonTypeServiceTest {
     @Test
     void getTypesListFromApiShouldReturnCorrectAmountOfTypes(){
         List<PokemonType> actualList;
-            actualList = pokemonTypeService.getPokemonTypesListFromApi(
+            actualList = pokemonTypeService.getPokemonTypesListFromPokemonEntryFromApi(
                     jsonTestUtils.getJsonFromFile(bulbasaurFilePath));
 
         Assertions.assertEquals(2, actualList.size());

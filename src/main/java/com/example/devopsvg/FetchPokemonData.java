@@ -14,11 +14,13 @@ import org.springframework.stereotype.Component;
 @Profile("!test")
 @Component
 public class FetchPokemonData implements CommandLineRunner {
-    private final JsonExtractor jsonExtractor = new JsonExtractor();
+    private final JsonExtractor jsonExtractor;
     private final PokemonTypeService pokemonTypeService;
     private final PokemonService pokemonService;
     private final PokemonMoveService pokemonMoveService;
     private final UrlUtils urlUtils;
+    private int currentProgress;
+    private int numberOfOperations;
 
     @Value("${pokemon.types.api.url}")
     private String pokemonTypesApiUrl;
@@ -32,8 +34,9 @@ public class FetchPokemonData implements CommandLineRunner {
     @Value("${pokemon.api.alternate_form_limiter}")
     private int alternateFormLimiter;
 
-    public FetchPokemonData(PokemonTypeService pokemonTypeService, PokemonService pokemonService,
+    public FetchPokemonData(JsonExtractor jsonExtractor, PokemonTypeService pokemonTypeService, PokemonService pokemonService,
                             PokemonMoveService pokemonMoveService, UrlUtils urlUtils){
+        this.jsonExtractor = jsonExtractor;
         this.pokemonTypeService = pokemonTypeService;
         this.pokemonService = pokemonService;
         this.pokemonMoveService = pokemonMoveService;
@@ -42,40 +45,101 @@ public class FetchPokemonData implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (pokemonTypeService.countNumberOfTypesInDatabase() == 0 &&
-                pokemonTypeService.countNumberOfTypesInDatabase() == 0 &&
-                pokemonService.countNumberOfPokemonInDatabase() == 0) {
-            fetchTypesAndAddRelationshipsToDatabase(jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
-            fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(urlUtils.removeResponseLimit(pokemonMovesApiUrl)).path("results"));
-            fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(urlUtils.removeResponseLimit(pokemonListApiUrl)).path("results"));
-            System.out.println("*** Fetch complete ***");
-        } else {
-            System.out.println("*** Database already populated, running application normally ***");
+        addTypesToDatabaseIfTheyAreNotAlreadyPresent();
+        addMovesToDatabaseIfTheyAreaNotAlreadyPresent();
+        addPokemonToDatabaseIfTheyAreNotAlreadyPresent();
+
+        System.out.println("\n*** Database populated. Starting application ***");
+    }
+
+    private void addTypesToDatabaseIfTheyAreNotAlreadyPresent() {
+        if(pokemonTypeService.countNumberOfTypesInDatabase() == 0){
+            fetchTypesAndAddRelationshipsToDatabase(
+                    jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
+        }else{
+            System.out.println("*** Types already present in database ***");
+        }
+    }
+
+    private void addMovesToDatabaseIfTheyAreaNotAlreadyPresent() {
+        if(pokemonMoveService.countNumberOfMovesInDatabase() == 0){
+            fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(
+                    urlUtils.removeResponseLimit(pokemonMovesApiUrl)).path("results"));
+        }else{
+            System.out.println("*** Moves already present in database ***");
+        }
+    }
+
+    private void addPokemonToDatabaseIfTheyAreNotAlreadyPresent() {
+        if(pokemonService.countNumberOfPokemonInDatabase() == 0){
+            fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(
+                    urlUtils.removeResponseLimit(pokemonListApiUrl)).path("results"));
+        }else{
+            System.out.println("*** Pokemon already present in database **");
         }
     }
 
     private void fetchTypesAndAddRelationshipsToDatabase(JsonNode resultsNode) {
-        for (JsonNode pokemonTypeNode : resultsNode) {
-            pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(pokemonTypeNode.path("name").asText());
-        }
-        System.out.println("*** All types added ***");
-        pokemonTypeService.addTypeRelationshipsIfTheyDoNotAlreadyExist();
-        System.out.println("*** Type relationships added ***");
-    }
+        resetProgress(resultsNode, "Types");
 
-    private void fetchPokemonToDatabase(JsonNode resultsNode) {
-        for (JsonNode pokemonNode : resultsNode) {
-            if (urlUtils.extractIdFromUrl(pokemonNode.path("url").asText()) < alternateFormLimiter) {
-                pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(urlUtils.extractIdFromUrl(pokemonNode.path("url").asText()));
-            }
+        for (JsonNode pokemonTypeNode : resultsNode) {
+            pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
+                    pokemonTypeNode.path("name").asText());
+
+            currentProgress++;
+            printProgressBar(numberOfOperations);
         }
-        System.out.println("*** All Pokémon added ***");
+        pokemonTypeService.addTypeRelationshipsIfTheyDoNotAlreadyExist();
     }
 
     private void fetchMovesToDatabase(JsonNode resultsNode) {
+        resetProgress(resultsNode, "Moves");
+
         for (JsonNode pokemonMoveNode : resultsNode) {
-            pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(urlUtils.extractIdFromUrl(pokemonMoveNode.path("url").asText()));
+            pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(
+                    urlUtils.extractIdFromUrl(pokemonMoveNode.path("url").asText()));
+
+            currentProgress++;
+            printProgressBar(numberOfOperations);
         }
-        System.out.println("*** All moves added ***");
     }
+
+    private void fetchPokemonToDatabase(JsonNode resultsNode) {
+        resetProgress(resultsNode, "Pokemon");
+
+        for (JsonNode pokemonNode : resultsNode) {
+            if (urlUtils.extractIdFromUrl(pokemonNode.path("url").asText()) < alternateFormLimiter) {
+                pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(
+                        urlUtils.extractIdFromUrl(pokemonNode.path("url").asText()));
+            }
+            currentProgress++;
+            printProgressBar(numberOfOperations);
+        }
+    }
+
+    private void resetProgress(JsonNode resultsNode, String entityToAddToDatabase){
+        System.out.println("\n--- Adding " + entityToAddToDatabase + " to database ---");
+        currentProgress = 0;
+        numberOfOperations = resultsNode.size();
+    }
+
+    private void printProgressBar(int totalMoves) {
+        int progressBarWidth = 30;
+        int progress = (int) ((double) currentProgress / totalMoves * progressBarWidth);
+
+        StringBuilder progressBar = new StringBuilder("[");
+        for (int i = 0; i < progressBarWidth; i++) {
+            if (i < progress) {
+                progressBar.append("=");
+            } else {
+                progressBar.append(" ");
+            }
+        }
+        progressBar.append("] ");
+
+        System.out.print("\r" + progressBar + (currentProgress * 100 / totalMoves) + "%");
+
+        System.out.flush();
+    }
+
 }
