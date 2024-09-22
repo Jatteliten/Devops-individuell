@@ -33,10 +33,6 @@ public class PokemonTypeService {
         return pokemonTypeRepo.findByName(name);
     }
 
-    public Long countNumberOfTypesInDatabase(){
-        return pokemonTypeRepo.count();
-    }
-
     public void saveTypeToDatabaseIfItDoesNotAlreadyExist(String name){
         JsonNode pokemonTypeData = jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl + name);
         Optional<PokemonType> tempPokemonType = Optional.ofNullable(

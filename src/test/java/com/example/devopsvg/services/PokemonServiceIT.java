@@ -6,7 +6,6 @@ import com.example.devopsvg.model.PokemonType;
 import com.example.devopsvg.repos.PokemonMoveRepo;
 import com.example.devopsvg.repos.PokemonRepo;
 import com.example.devopsvg.repos.PokemonTypeRepo;
-import com.example.devopsvg.utils.UrlUtils;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +37,6 @@ class PokemonServiceIT {
     PokemonMoveService pokemonMoveService;
     @Autowired
     PokemonMoveRepo pokemonMoveRepo;
-    private final UrlUtils urlUtils = new UrlUtils();
     private final JsonTestUtils jsonTestUtils = new JsonTestUtils();
     private final String TEST_POKEMON_NAME = "Bulbasaur";
     private final int TEST_POKEMON_ID = 1;
@@ -69,8 +67,8 @@ class PokemonServiceIT {
         jsonTestUtils.getJsonFromFile(bulbasaurFilePath)
                 .path("moves")
                 .forEach(typeData ->
-                        pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(urlUtils.extractIdFromUrl(
-                                typeData.path("move").path("url").asText())));
+                        pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(
+                                typeData.path("move").path("name").asText()));
 
     }
 
@@ -106,9 +104,8 @@ class PokemonServiceIT {
     @Test
     @Transactional
     void savePokemonToDataBaseShouldSaveCorrectMoves(){
-        int tackleMoveId = 33;
         String tackleName = "tackle";
-        pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(tackleMoveId);
+        pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(tackleName);
         pokemonService.savePokemonToDatabaseIfItDoesNotAlreadyExist(TEST_POKEMON_ID);
 
         Assertions.assertTrue(pokemonService.getPokemonByName(TEST_POKEMON_NAME).getMoves()

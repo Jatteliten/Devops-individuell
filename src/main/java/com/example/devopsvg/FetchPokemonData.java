@@ -45,42 +45,20 @@ public class FetchPokemonData implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        addTypesToDatabaseIfTheyAreNotAlreadyPresent();
-        addMovesToDatabaseIfTheyAreaNotAlreadyPresent();
-        addPokemonToDatabaseIfTheyAreNotAlreadyPresent();
+        fetchTypesAndAddRelationshipsToDatabase(
+                jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
+
+        fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(
+                urlUtils.removeResponseLimit(pokemonMovesApiUrl)).path("results"));
+
+        fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(
+                urlUtils.removeResponseLimit(pokemonListApiUrl)).path("results"));
 
         System.out.println("\n*** Database populated. Starting application ***");
     }
 
-    private void addTypesToDatabaseIfTheyAreNotAlreadyPresent() {
-        if(pokemonTypeService.countNumberOfTypesInDatabase() == 0){
-            fetchTypesAndAddRelationshipsToDatabase(
-                    jsonExtractor.fetchJsonFromUrl(pokemonTypesApiUrl).path("results"));
-        }else{
-            System.out.println("*** Types already present in database ***");
-        }
-    }
-
-    private void addMovesToDatabaseIfTheyAreaNotAlreadyPresent() {
-        if(pokemonMoveService.countNumberOfMovesInDatabase() == 0){
-            fetchMovesToDatabase(jsonExtractor.fetchJsonFromUrl(
-                    urlUtils.removeResponseLimit(pokemonMovesApiUrl)).path("results"));
-        }else{
-            System.out.println("*** Moves already present in database ***");
-        }
-    }
-
-    private void addPokemonToDatabaseIfTheyAreNotAlreadyPresent() {
-        if(pokemonService.countNumberOfPokemonInDatabase() == 0){
-            fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(
-                    urlUtils.removeResponseLimit(pokemonListApiUrl)).path("results"));
-        }else{
-            System.out.println("*** Pokemon already present in database **");
-        }
-    }
-
     private void fetchTypesAndAddRelationshipsToDatabase(JsonNode resultsNode) {
-        resetProgress(resultsNode, "Types");
+        resetPrintedProgressBar(resultsNode, "Types");
 
         for (JsonNode pokemonTypeNode : resultsNode) {
             pokemonTypeService.saveTypeToDatabaseIfItDoesNotAlreadyExist(
@@ -92,18 +70,17 @@ public class FetchPokemonData implements CommandLineRunner {
     }
 
     private void fetchMovesToDatabase(JsonNode resultsNode) {
-        resetProgress(resultsNode, "Moves");
+        resetPrintedProgressBar(resultsNode, "Moves");
 
         for (JsonNode pokemonMoveNode : resultsNode) {
-            pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(
-                    urlUtils.extractIdFromUrl(pokemonMoveNode.path("url").asText()));
+            pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(pokemonMoveNode.path("name").asText());
 
             incrementProgressAndPrintProgressBar(numberOfOperations);
         }
     }
 
     private void fetchPokemonToDatabase(JsonNode resultsNode) {
-        resetProgress(resultsNode, "Pokemon");
+        resetPrintedProgressBar(resultsNode, "Pokemon");
 
         for (JsonNode pokemonNode : resultsNode) {
             if (urlUtils.extractIdFromUrl(pokemonNode.path("url").asText()) < alternateFormLimiter) {
@@ -114,7 +91,7 @@ public class FetchPokemonData implements CommandLineRunner {
         }
     }
 
-    private void resetProgress(JsonNode resultsNode, String entityToAddToDatabase){
+    private void resetPrintedProgressBar(JsonNode resultsNode, String entityToAddToDatabase){
         System.out.println("\n--- Adding " + entityToAddToDatabase + " to database ---");
         currentProgress = 0;
         numberOfOperations = resultsNode.size();

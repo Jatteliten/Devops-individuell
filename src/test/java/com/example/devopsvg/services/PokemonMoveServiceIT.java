@@ -21,7 +21,7 @@ public class PokemonMoveServiceIT {
 
     @Test
     void saveMoveToDatabaseIfItDoesNotAlreadyExistShouldSaveMove(){
-        pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist(1);
+        pokemonMoveService.saveMoveToDatabaseIfItDoesNotAlreadyExist("tackle");
 
         Assertions.assertEquals(1, pokemonMoveRepo.findAll().size());
     }

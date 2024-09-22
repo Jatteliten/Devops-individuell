@@ -31,13 +31,12 @@ public class PokemonMoveService {
         return pokemonMoveRepo.findByName(name);
     }
 
-    public Long countNumberOfMovesInDatabase(){ return pokemonMoveRepo.count(); }
-
-    public void saveMoveToDatabaseIfItDoesNotAlreadyExist(int pokemonMoveId){
-        JsonNode pokemonData = jsonExtractor.fetchJsonFromUrl(pokemonMovesApiUrl + pokemonMoveId);
+    public void saveMoveToDatabaseIfItDoesNotAlreadyExist(String pokemonMoveName){
         Optional<PokemonMove> tempPokemonMove = Optional.ofNullable(
-                getPokemonMoveByName(pokemonData.path("name").asText()));
+                getPokemonMoveByName(pokemonMoveName));
+
         if(tempPokemonMove.isEmpty()){
+            JsonNode pokemonData = jsonExtractor.fetchJsonFromUrl(pokemonMovesApiUrl + pokemonMoveName);
             saveMoveToDatabase(pokemonData);
         }
     }

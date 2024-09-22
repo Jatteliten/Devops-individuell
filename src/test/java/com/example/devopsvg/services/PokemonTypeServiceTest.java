@@ -54,14 +54,6 @@ class PokemonTypeServiceTest {
     }
 
     @Test
-    void countNumberOfTypesInDatabaseShouldCountTheCorrectAmountOfTypesInDatabase() {
-        Long amount = 3L;
-        Mockito.when(pokemonTypeRepo.count()).thenReturn(amount);
-
-        Assertions.assertEquals(amount, pokemonTypeService.countNumberOfTypesInDatabase());
-    }
-
-    @Test
     void repoShouldReturnCorrectTypeWhenFindingByName() {
         String typeName = "test";
         PokemonType type = PokemonType.builder().name(typeName).build();

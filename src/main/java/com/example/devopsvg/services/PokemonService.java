@@ -73,10 +73,10 @@ public class PokemonService {
     }
 
     public void savePokemonToDatabaseIfItDoesNotAlreadyExist(int pokemonId) {
-        JsonNode pokemonData = jsonExtractor.fetchJsonFromUrl(pokemonListApiUrl + pokemonId);
-        Optional<Pokemon> tempPokemon = Optional.ofNullable(
-                getPokemonByName(pokemonData.path("name").asText()));
+        Optional<Pokemon> tempPokemon = Optional.ofNullable(pokemonRepo.findByPokedexId(pokemonId));
+
         if (tempPokemon.isEmpty()) {
+            JsonNode pokemonData = jsonExtractor.fetchJsonFromUrl(pokemonListApiUrl + pokemonId);
             savePokemonToDatabaseFromJsonNode(pokemonData);
         }
     }
