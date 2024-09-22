@@ -36,7 +36,7 @@ public class PokemonController {
         model.addAttribute("page", page);
         model.addAttribute("types", pokemonTypeService.getAllTypeNamesList());
         model.addAttribute("isFullList", true);
-        return "pokemon-list.html";
+        return "pokemon-list";
     }
 
     @GetMapping("/list-by-type")
@@ -44,7 +44,7 @@ public class PokemonController {
         model.addAttribute("pokemonlist", pokemonService.getAllPokemonByTypeForList(type));
         model.addAttribute("types", pokemonTypeService.getAllTypeNamesList());
         model.addAttribute("isFullList", false);
-        return "pokemon-list.html";
+        return "pokemon-list";
     }
 
     @GetMapping("/list-by-search")
@@ -52,7 +52,7 @@ public class PokemonController {
         model.addAttribute("pokemonlist", pokemonService.getAllPokemonWithNameThatContainsString(input));
         model.addAttribute("types", pokemonTypeService.getAllTypeNamesList());
         model.addAttribute("isFullList", false);
-        return "pokemon-list.html";
+        return "pokemon-list";
     }
 
     @GetMapping("/pokemon-info")
@@ -60,7 +60,7 @@ public class PokemonController {
         Pokemon pokemon = pokemonService.getPokemonByName(pokemonService.capitalizeFirstLetter(name));
         if(pokemon == null){
             model.addAttribute("errorMessage", name + " does not exist in pokédex");
-            return "error.html";
+            return "error";
         }
         model.addAttribute("pokemon", pokemon);
         model.addAttribute("pokemonTypeMatchUps", pokemonService.calculateDamageTakenMultipliers(pokemon));
@@ -69,7 +69,7 @@ public class PokemonController {
         findNextOrPreviousPokemonAndAddToModelIfItIsNotNull(
                 pokemonService.findNextPokemonInPokeDex(pokemon), model, "nextPokemon");
 
-        return "pokemon-info.html";
+        return "pokemon-info";
     }
 
     @GetMapping("/pokemon-random")
