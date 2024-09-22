@@ -22,4 +22,5 @@ class JsonExtractorTestIT {
                 .path("name")
                 .asText());
     }
+
 }

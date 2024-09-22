@@ -35,7 +35,7 @@ public class PokemonMoveService {
 
 
     public void saveMoveToDatabaseIfItDoesNotAlreadyExist(int pokemonMoveId){
-        JsonNode pokemonData = jsonExtractor.getSpecificEntryDataFromApiById(pokemonMovesApiUrl, pokemonMoveId);
+        JsonNode pokemonData = jsonExtractor.fetchJsonFromUrl(pokemonMovesApiUrl + pokemonMoveId);
         Optional<PokemonMove> tempPokemonMove = Optional.ofNullable(
                 getPokemonMoveByName(pokemonData.path("name").asText()));
         if(tempPokemonMove.isEmpty()){

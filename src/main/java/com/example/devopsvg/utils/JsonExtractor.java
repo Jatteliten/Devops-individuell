@@ -3,7 +3,6 @@ package com.example.devopsvg.utils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,11 +15,9 @@ public class JsonExtractor {
 
     private final ObjectMapper objectMapper;
     private static final HttpClient client = HttpClient.newHttpClient();
-    private final RestTemplate restTemplate;
 
-    public JsonExtractor(ObjectMapper objectMapper, RestTemplate restTemplate) {
+    public JsonExtractor(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
-        this.restTemplate = restTemplate;
     }
 
 
@@ -37,14 +34,4 @@ public class JsonExtractor {
         }
     }
 
-    public JsonNode getSpecificEntryDataFromApiById(String url, int id) {
-        String jsonResponse = restTemplate.getForObject(url + id, String.class);
-
-        try {
-            return objectMapper.readTree(jsonResponse);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }
