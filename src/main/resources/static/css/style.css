@@ -12,7 +12,7 @@
     border: 1px solid #3d3d3d;
 }
 
-.type-unknown { background-color: white; color: black;}
+.type-normal { background-color: white; color: black;}
 .type-fire { background-color: #EE8130; }
 .type-water { background-color: #6390F0; }
 .type-grass { background-color: #7AC74C; }
