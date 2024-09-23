@@ -54,7 +54,7 @@ public class FetchPokemonData implements CommandLineRunner {
         fetchPokemonToDatabase(jsonExtractor.fetchJsonFromUrl(
                 urlUtils.removeResponseLimit(pokemonListApiUrl)).path("results"));
 
-        System.out.println("\n*** Database populated. Starting application ***");
+        System.out.println("\n\n*** Database populated. Starting application ***");
     }
 
     private void fetchTypesAndAddRelationshipsToDatabase(JsonNode resultsNode) {
