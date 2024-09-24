@@ -178,4 +178,21 @@ class PokemonServiceTest {
                 pokemonService.findPreviousPokemonInPokeDex(pokemonService.getPokemonByPokedexId(secondPokemonId)));
     }
 
+    @Test
+    void getAllPokemonByTypeForListShouldReturnCorrectPokemon() {
+        Pokemon pokemon = Pokemon.builder().name("test").build();
+        PokemonListDto pokemonListDto = pokemonService.convertPokemonToPokemonListDto(pokemon);
+
+        Mockito.when(pokemonRepo.findAllByTypes_Name("grass")).thenReturn(List.of(pokemon));
+
+        Assertions.assertEquals(pokemonService.getAllPokemonByTypeForList("grass"), List.of(pokemonListDto));
+    }
+
+    @Test
+    void removeLineBreaksAndFormFeedCharactersFromFlavorTextShouldConvertTextCorrectly() {
+        String text = "This\u000cis\na\ntest";
+        String expectedText = "This is a test";
+
+        Assertions.assertEquals(pokemonService.removeLineBreaksAndFormFeedCharactersFromFlavorText(text), expectedText);
+    }
 }

@@ -123,6 +123,16 @@ class PokemonServiceIT {
         Assertions.assertEquals(expectedFlavorText, pokemonService.getPokemonByName(TEST_POKEMON_NAME).getFlavorText());
     }
 
+
+    @Test
+    @Transactional
+    void findFlavorTextInSpeciesEntryShouldFindCorrectFlavorText() {
+        String bulbasaurFlavorText = "A strange seed was planted on its back at birth. The plant sprouts and grows with this POKéMON.";
+        String bulbasaurSpeciesUrl = "https://pokeapi.co/api/v2/pokemon-species/1/";
+
+        Assertions.assertEquals(pokemonService.findFlavorTextInSpeciesEntry(bulbasaurSpeciesUrl), bulbasaurFlavorText);
+    }
+
     @Test
     @Transactional
     void getAllPokemonInPokedexOrderShouldGetAllPokemonInCorrectOrderByPokedexId(){
