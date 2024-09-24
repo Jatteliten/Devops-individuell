@@ -201,7 +201,7 @@ class PokemonServiceTest {
         Pokemon pokemonOne = Pokemon.builder().pokedexId(1).build();
         Pokemon pokemonTwo = Pokemon.builder().pokedexId(2).build();
         Pokemon pokemonThree = Pokemon.builder().pokedexId(3).build();
-        List <Integer> pokedexIdList = List.of(1, 2, 3);
+        List <Pokemon> pokemonList = List.of(pokemonOne, pokemonTwo, pokemonThree);
 
         Mockito.when(pokemonRepo.count()).thenReturn(3L);
         Mockito.when(pokemonRepo.findByPokedexId(1)).thenReturn(pokemonOne);
@@ -209,8 +209,7 @@ class PokemonServiceTest {
         Mockito.when(pokemonRepo.findByPokedexId(3)).thenReturn(pokemonThree);
 
         for(int i = 0; i < 100; i++){
-            Pokemon test = pokemonService.getRandomPokemon();
-            Assertions.assertTrue(pokedexIdList.contains(test.getPokedexId()));
+            Assertions.assertTrue(pokemonList.contains(pokemonService.getRandomPokemon()));
         }
     }
 }
