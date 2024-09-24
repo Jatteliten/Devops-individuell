@@ -195,4 +195,22 @@ class PokemonServiceTest {
 
         Assertions.assertEquals(pokemonService.removeLineBreaksAndFormFeedCharactersFromFlavorText(text), expectedText);
     }
+
+    @Test
+    void getRandomPokemonShouldReturnPokemonInDatabase() {
+        Pokemon pokemonOne = Pokemon.builder().pokedexId(1).build();
+        Pokemon pokemonTwo = Pokemon.builder().pokedexId(2).build();
+        Pokemon pokemonThree = Pokemon.builder().pokedexId(3).build();
+        List <Integer> pokedexIdList = List.of(1, 2, 3);
+
+        Mockito.when(pokemonRepo.count()).thenReturn(3L);
+        Mockito.when(pokemonRepo.findByPokedexId(1)).thenReturn(pokemonOne);
+        Mockito.when(pokemonRepo.findByPokedexId(2)).thenReturn(pokemonTwo);
+        Mockito.when(pokemonRepo.findByPokedexId(3)).thenReturn(pokemonThree);
+
+        for(int i = 0; i < 100; i++){
+            Pokemon test = pokemonService.getRandomPokemon();
+            Assertions.assertTrue(pokedexIdList.contains(test.getPokedexId()));
+        }
+    }
 }

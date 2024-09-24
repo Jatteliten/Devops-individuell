@@ -201,7 +201,7 @@ public class PokemonService {
     public Pokemon getRandomPokemon() {
         Random rand = new Random();
 
-        return getPokemonByPokedexId(rand.nextInt((int) (countNumberOfPokemonInDatabase() + 1)));
+        return getPokemonByPokedexId(rand.nextInt(Math.toIntExact(countNumberOfPokemonInDatabase())) + 1);
     }
 
 }
