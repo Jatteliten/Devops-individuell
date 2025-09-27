@@ -13,18 +13,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: |
-          docker build -t jatteliten/pokemon-list .
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
+
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Push Docker image
+      - name: Build and push Docker image
         run: |
+          docker build -t jatteliten/pokemon-list .
           docker push jatteliten/pokemon-list
 
       - name: Deploy to production
